@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="阁楼钥匙">
+<meta name="theme-color" content="#F3EDE2">
+<title>阁楼上的钥匙 · 英语寻踪计划 Unit 1</title>
+<style>
+:root{
+  --sky:#F3EDE2;
+  --sky2:#FAF7F0;
+  --card:#FFFFFF;
+  --card-edge:#DDD2BE;
+  --ink:#2B2417;
+  --ink-dim:#8A7D63;
+  --air-red:#C05B2E;
+  --air-blue:#3D6B54;
+  --gold:#C99B3F;
+  --mint:#3D8B5F;
+  --coral:#C24A3A;
+  --radius:18px;
+  --stripe:repeating-linear-gradient(135deg,var(--air-red) 0 10px,#F6F1E7 10px 20px,var(--air-blue) 20px 30px,#F6F1E7 30px 40px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB",-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;
+  background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 55%,#F1EADD 100%);
+  color:var(--ink);
+  min-height:100vh;min-height:100dvh;
+  overscroll-behavior:none;
+}
+.num{font-family:ui-rounded,"SF Pro Rounded","PingFang SC",sans-serif;font-variant-numeric:tabular-nums;}
+#app{max-width:560px;margin:0 auto;min-height:100dvh;position:relative;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+.screen{position:relative;z-index:1;padding:20px 18px 40px;display:none;}
+.screen.on{display:block;}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;}}
+.airmail{position:relative;}
+.airmail::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;background:var(--stripe);border-radius:var(--radius) var(--radius) 0 0;opacity:.85;}
+.hero{background:var(--card);border:1px solid var(--card-edge);border-radius:var(--radius);padding:20px 16px 16px;box-shadow:0 4px 18px -10px rgba(90,70,30,.3);}
+.hero .eyebrow{font-size:11px;letter-spacing:.35em;color:var(--air-blue);font-weight:700;}
+.hero h1{font-size:25px;font-weight:800;margin-top:6px;letter-spacing:.02em;}
+.hero p{color:var(--ink-dim);font-size:13px;margin-top:6px;line-height:1.7;}
+.statrow{display:flex;gap:10px;margin:14px 0 8px;}
+.stat{flex:1;background:var(--card);border:1px solid var(--card-edge);border-radius:14px;padding:10px 12px;text-align:center;}
+.stat .v{font-size:20px;font-weight:800;}
+.stat .k{font-size:11px;color:var(--ink-dim);margin-top:2px;}
+.stat .v .u{font-size:12px;font-weight:600;color:var(--ink-dim);}
+.wrongbtn{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:10px 0 4px;
+  background:var(--card);border:1px solid var(--card-edge);color:var(--ink);
+  border-radius:14px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px -6px rgba(90,70,30,.3);font-family:inherit;}
+.wrongbtn .badge{background:var(--coral);color:#fff;border-radius:999px;font-size:12px;padding:2px 8px;font-weight:800;}
+.trail{position:relative;margin-top:24px;padding-bottom:10px;}
+.trail::before{content:"";position:absolute;left:34px;top:10px;bottom:10px;width:3px;
+  background:repeating-linear-gradient(180deg,#CBBD9F 0 8px,transparent 8px 16px);border-radius:2px;}
+.node{position:relative;display:flex;align-items:center;gap:14px;padding:10px 0 10px 12px;cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--ink);font-family:inherit;}
+.node .peg{width:46px;height:46px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:var(--card);border:2px solid var(--card-edge);position:relative;z-index:1;}
+.node.done .peg{background:linear-gradient(135deg,var(--gold),#A87E28);border-color:var(--gold);}
+.node.locked{opacity:.5;cursor:default;}
+.node .info{flex:1;background:var(--card);border:1px solid var(--card-edge);border-radius:var(--radius);padding:12px 14px;}
+.node.next .info{border-color:var(--air-red);box-shadow:0 0 0 1px var(--air-red),0 6px 20px -8px rgba(192,91,46,.35);}
+.node .t{font-size:16px;font-weight:800;}
+.node .alt{font-size:11px;color:var(--ink-dim);margin-top:2px;}
+.node .tag{display:inline-block;font-size:10px;font-weight:700;color:var(--air-blue);border:1px solid var(--air-blue);
+  border-radius:999px;padding:1px 8px;margin-top:5px;}
+button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outline-offset:2px;}
+.mline{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.mbar{flex:1;height:9px;background:#EDE5D4;border-radius:999px;overflow:hidden;}
+.mbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--air-blue),var(--mint));transition:width .4s;}
+.mpct{font-size:12px;font-weight:800;color:var(--ink-dim);min-width:34px;text-align:right;}
+.mastered .mbar i{background:linear-gradient(90deg,#A87E28,var(--gold));}
+.mastered .mpct{color:#8A6A1E;}
+.mbadge{display:inline-block;font-size:10px;font-weight:800;color:#4A3608;background:linear-gradient(135deg,var(--gold),#DDBB6A);border-radius:999px;padding:2px 8px;margin-top:5px;}
+.diffchip{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;}
+.diffchip.d1{background:rgba(61,139,95,.13);color:var(--mint);}
+.diffchip.d2{background:rgba(61,107,84,.13);color:var(--air-blue);}
+.diffchip.d3{background:rgba(192,91,46,.13);color:var(--air-red);}
+.sessbar{display:flex;align-items:center;gap:8px;margin-top:12px;}
+.sessbar .mbar{height:11px;}
+.sessbar .lab{font-size:12px;color:var(--ink-dim);font-weight:700;white-space:nowrap;}
+.deltaup{color:var(--mint);font-weight:800;}
+.deltadown{color:var(--coral);font-weight:800;}
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.backbtn{background:var(--card);border:1px solid var(--card-edge);color:var(--ink-dim);border-radius:12px;
+  padding:8px 14px;font-size:14px;cursor:pointer;font-weight:600;font-family:inherit;}
+.qprog{flex:1;height:10px;background:#EDE5D4;border-radius:999px;overflow:hidden;border:1px solid var(--card-edge);}
+.qprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--air-blue),var(--air-red));transition:width .3s;}
+.combo{font-size:13px;font-weight:800;color:var(--air-red);min-width:52px;text-align:right;}
+.qmeta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink-dim);margin-bottom:8px;padding:0 2px;}
+.review-flag{color:var(--coral);font-weight:800;}
+.qcard{background:var(--card);border:1px solid var(--card-edge);border-radius:22px;padding:26px 20px 22px;min-height:120px;box-shadow:0 4px 18px -10px rgba(90,70,30,.3);}
+.qcard .qtext{font-size:18.5px;line-height:1.75;font-weight:650;}
+.en{font-family:Georgia,"Times New Roman",serif;}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.opt{background:#F8F4EB;border:2px solid var(--card-edge);border-radius:16px;padding:14px 16px;font-size:16.5px;
+  color:var(--ink);text-align:left;cursor:pointer;transition:transform .06s;display:flex;align-items:center;gap:12px;width:100%;font-family:inherit;}
+.opt:active{transform:scale(.985);}
+.opt .key{width:26px;height:26px;border-radius:8px;background:#E8DFC9;color:var(--ink-dim);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none;}
+.opt.correct{border-color:var(--mint);background:rgba(61,139,95,.1);}
+.opt.correct .key{background:var(--mint);color:#fff;}
+.opt.wrong{border-color:var(--coral);background:rgba(194,74,58,.08);}
+.opt.wrong .key{background:var(--coral);color:#fff;}
+.opt:disabled{cursor:default;}
+.inputrow{display:flex;gap:10px;margin-top:18px;}
+.inputrow input{flex:1;background:#F8F4EB;border:2px solid var(--card-edge);border-radius:16px;color:var(--ink);
+  font-size:20px;padding:13px 16px;outline:none;font-family:Georgia,serif;min-width:0;}
+.inputrow input:focus{border-color:var(--air-blue);}
+.inputrow button{background:linear-gradient(135deg,var(--air-blue),#2C513F);border:none;color:#fff;
+  font-size:16px;font-weight:800;border-radius:16px;padding:0 22px;cursor:pointer;font-family:inherit;}
+/* 连词成句 */
+#orderwrap{display:none;margin-top:18px;}
+.built{min-height:52px;background:#F8F4EB;border:2px dashed var(--card-edge);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.built.empty::before{content:"👆 按顺序点击下面的单词";color:var(--ink-dim);font-size:13px;padding-left:6px;}
+.chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;}
+.chip{background:var(--card);border:2px solid var(--card-edge);border-radius:12px;padding:9px 14px;font-size:17px;font-family:Georgia,serif;cursor:pointer;}
+.built .chip{background:rgba(61,107,84,.1);border-color:var(--air-blue);}
+.chip.used{opacity:.25;pointer-events:none;}
+.orderbtns{display:flex;gap:10px;margin-top:12px;}
+.orderbtns button{flex:1;border-radius:12px;border:none;padding:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+#btn-order-clear{background:#EDE5D4;color:var(--ink-dim);}
+#btn-order-ok{background:linear-gradient(135deg,var(--air-blue),#2C513F);color:#fff;}
+.feedback{margin-top:16px;border-radius:18px;padding:15px 16px;font-size:14.5px;line-height:1.75;display:none;}
+.feedback.ok{display:block;background:rgba(61,139,95,.08);border:1px solid rgba(61,139,95,.4);}
+.feedback.no{display:block;background:rgba(194,74,58,.07);border:1px solid rgba(194,74,58,.4);}
+.feedback .fh{font-weight:800;font-size:16px;margin-bottom:4px;}
+.feedback.ok .fh{color:var(--mint);}
+.feedback.no .fh{color:var(--coral);}
+.nextbtn{display:none;width:100%;margin-top:16px;background:linear-gradient(135deg,var(--air-red),#9E4620);
+  border:none;color:#fff;font-size:17px;font-weight:800;border-radius:16px;padding:15px;cursor:pointer;font-family:inherit;}
+.nextbtn.show{display:block;}
+.rescard{background:var(--card);border:1px solid var(--card-edge);border-radius:24px;padding:34px 22px 26px;text-align:center;margin-top:30px;box-shadow:0 4px 18px -10px rgba(90,70,30,.3);}
+.rescard h2{font-size:24px;font-weight:800;margin-top:10px;}
+.rescard .sub{color:var(--ink-dim);font-size:14px;margin-top:8px;line-height:1.7;}
+.resbtns{display:flex;gap:10px;margin-top:22px;}
+.resbtns button{flex:1;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;border:none;font-family:inherit;}
+.btn-ghost{background:var(--card);border:1px solid var(--card-edge)!important;color:var(--ink);}
+.btn-main{background:linear-gradient(135deg,var(--air-red),#9E4620);color:#fff;}
+.report{margin-top:18px;text-align:left;}
+.report .rrow{margin:12px 0;}
+.report .rname{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+.report .rbar{height:9px;background:#EDE5D4;border-radius:999px;overflow:hidden;}
+.report .rbar i{display:block;height:100%;border-radius:999px;}
+.advice{margin-top:16px;background:rgba(201,155,63,.1);border:1px solid rgba(201,155,63,.45);
+  border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.8;text-align:left;}
+.wb-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.wb-head h2{font-size:21px;font-weight:800;}
+.wb-sub{color:var(--ink-dim);font-size:13px;line-height:1.7;margin:6px 2px 14px;}
+.wb-item{background:var(--card);border:1px solid var(--card-edge);border-radius:16px;padding:14px 16px;margin-bottom:10px;}
+.wb-item .wq{font-size:15.5px;line-height:1.7;font-weight:650;}
+.wb-item .wmeta{font-size:12px;color:var(--ink-dim);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap;}
+.wb-item .wans{margin-top:8px;font-size:13.5px;line-height:1.7;color:var(--ink-dim);display:none;}
+.wb-item .wans b{color:var(--mint);}
+.wb-item.open .wans{display:block;}
+.wb-item .wtoggle{margin-top:8px;background:none;border:none;color:var(--air-blue);font-size:13px;font-weight:700;cursor:pointer;padding:0;font-family:inherit;}
+.wb-empty{text-align:center;color:var(--ink-dim);padding:50px 20px;font-size:15px;line-height:2;}
+.redo-btn{display:block;width:100%;background:linear-gradient(135deg,var(--coral),#96362A);border:none;color:#fff;
+  font-size:16px;font-weight:800;border-radius:16px;padding:15px;cursor:pointer;margin:8px 0 18px;font-family:inherit;}
+.clearchip{font-size:11px;font-weight:800;border-radius:999px;padding:2px 8px;background:#EDE5D4;color:var(--ink-dim);}
+.clearchip.c1{background:rgba(201,155,63,.2);color:#8A6A1E;}
+.mat{display:block;background:rgba(61,107,84,.07);border:1px solid rgba(61,107,84,.3);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.9;margin-bottom:12px;font-weight:500;}
+.mat b{color:var(--air-blue);}
+/* -------- 故事阅读器 -------- */
+.postcard{background:var(--card);border:1px solid var(--card-edge);border-radius:var(--radius);padding:24px 18px 20px;box-shadow:0 4px 18px -10px rgba(90,70,30,.3);}
+.postcard .stamp{float:right;width:52px;height:62px;border:2px dashed var(--card-edge);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 0 8px 10px;background:#FBF8F1;}
+.postcard h3{font-size:19px;font-weight:800;font-family:Georgia,serif;}
+.postcard .cn-sub{font-size:12px;color:var(--ink-dim);margin-top:2px;}
+.postcard .body{margin-top:14px;font-family:Georgia,"Times New Roman",serif;font-size:17.5px;line-height:2;transition:filter .4s;}
+.postcard .body p{margin:0 0 13px;}
+.blind .body{filter:blur(6px);pointer-events:none;user-select:none;}
+.sent{border-radius:5px;}
+.sent.playing{background:rgba(201,155,63,.28);}
+.readmode .sent{cursor:pointer;}
+.readmode .sent:active{background:rgba(61,107,84,.15);}
+.gw{border-bottom:2px dotted var(--air-blue);cursor:pointer;position:relative;color:inherit;}
+.gw i{display:none;position:absolute;left:50%;bottom:130%;transform:translateX(-50%);white-space:nowrap;
+  background:var(--ink);color:#fff;font-style:normal;font-size:13px;font-family:"PingFang SC",sans-serif;
+  padding:5px 10px;border-radius:8px;z-index:5;box-shadow:0 4px 12px rgba(0,0,0,.25);}
+.gw.on{background:rgba(61,107,84,.12);border-radius:4px;}
+.gw.on i{display:block;}
+.eptabs{display:flex;gap:8px;margin:14px 0;}
+.eptab{flex:1;background:var(--card);border:1px solid var(--card-edge);border-radius:12px;padding:10px 6px;font-size:13px;
+  font-weight:700;color:var(--ink-dim);cursor:pointer;text-align:center;font-family:inherit;}
+.eptab.cur{border-color:var(--air-red);color:var(--air-red);}
+.eptab .rd{display:block;font-size:10px;margin-top:2px;color:var(--mint);}
+.audiobar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.abtn{background:var(--card);border:1px solid var(--card-edge);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink);font-family:inherit;}
+.abtn.on{background:var(--air-blue);color:#fff;border-color:var(--air-blue);}
+.blindcard{background:rgba(61,107,84,.07);border:1px solid rgba(61,107,84,.35);border-radius:16px;padding:14px 16px;margin-bottom:14px;}
+.blindcard h4{font-size:15px;font-weight:800;}
+.blindcard p{font-size:13px;color:var(--ink-dim);line-height:1.8;margin-top:5px;}
+.blindcard .bb{display:flex;gap:10px;margin-top:10px;}
+.blindcard .bb button{flex:1;border:none;border-radius:12px;padding:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
+.wordbox{margin-top:14px;background:#F8F4EB;border:1px solid var(--card-edge);border-radius:14px;padding:12px 14px;font-size:14px;line-height:2;}
+.wordbox b{font-family:Georgia,serif;}
+.miniquiz{margin-top:14px;background:var(--card);border:1px solid var(--card-edge);border-radius:16px;padding:14px 16px;}
+.miniquiz h4{font-size:15px;font-weight:800;margin-bottom:4px;}
+.mq{margin-top:12px;}
+.mq .mqq{font-size:15.5px;font-weight:650;line-height:1.7;}
+.mq .mqopts{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.mq .mqo{background:#F8F4EB;border:1.5px solid var(--card-edge);border-radius:12px;padding:10px 12px;font-size:15px;text-align:left;cursor:pointer;font-family:Georgia,serif;}
+.mq .mqo.correct{border-color:var(--mint);background:rgba(61,139,95,.12);}
+.mq .mqo.wrong{border-color:var(--coral);background:rgba(194,74,58,.1);}
+.talkbox{margin-top:14px;background:rgba(192,91,46,.06);border:1px solid rgba(192,91,46,.3);border-radius:16px;padding:14px 16px;font-size:14px;line-height:2;}
+.talkbox h4{font-size:15px;font-weight:800;}
+.writecard{margin-top:16px;background:rgba(201,155,63,.09);border:1px solid rgba(201,155,63,.5);border-radius:16px;padding:16px;}
+.writecard h4{font-size:16px;font-weight:800;}
+.writecard p{font-size:13.5px;line-height:1.9;color:var(--ink);margin-top:8px;}
+.writecard textarea{width:100%;margin-top:10px;height:130px;background:#fff;border:1px solid var(--card-edge);border-radius:12px;
+  padding:10px;font-size:16px;font-family:Georgia,serif;color:var(--ink);outline:none;line-height:1.8;}
+.writecard textarea:focus{border-color:var(--gold);}
+.writecard .savebtn{margin-top:10px;width:100%;background:linear-gradient(135deg,var(--gold),#A87E28);border:none;color:#3E2E06;
+  font-size:15px;font-weight:800;border-radius:12px;padding:12px;cursor:pointer;font-family:inherit;}
+.checklist{margin-top:8px;font-size:13px;color:var(--ink-dim);line-height:2;}
+.ttsnote{font-size:11.5px;color:var(--ink-dim);margin:4px 2px 10px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ MAP ============ -->
+  <section class="screen on" id="scr-map">
+    <div class="hero airmail">
+      <div class="eyebrow">THE KEY IN THE ATTIC · UNIT 1</div>
+      <h1>阁楼上的钥匙 · 英语寻踪</h1>
+      <p>一把没有锁的钥匙，一张三十年前的照片，一个远在悉尼的名字。Tom 决定找到爷爷失联多年的妹妹 Mary——而寻人，要从学会用英语介绍「你和我」开始。</p>
+    </div>
+    <div class="statrow">
+      <div class="stat"><div class="v num" id="st-mastered">0<span class="u">/2</span></div><div class="k">已掌握</div></div>
+      <div class="stat"><div class="v num" id="st-answered">0</div><div class="k">累计答题</div></div>
+      <div class="stat"><div class="v num" id="st-acc">—</div><div class="k">总正确率</div></div>
+    </div>
+    <button class="wrongbtn" id="btn-today" style="border-color:var(--air-red);color:var(--air-red)">🎯 今日推荐</button>
+    <button class="wrongbtn" id="btn-story">📖 第 1 章 ·《The Key in the Attic》</button>
+    <div style="display:flex;gap:10px">
+      <button class="wrongbtn" id="btn-vocab" style="flex:1">🔤 单词本</button>
+      <button class="wrongbtn" id="btn-extra" style="flex:1">📚 泛读番外</button>
+      <button class="wrongbtn" id="btn-plan" style="flex:1">🗓 本周计划</button>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="wrongbtn" id="btn-wrongbook" style="flex:1">📕 错题本 <span class="badge" id="wb-badge">0</span></button>
+      <button class="wrongbtn" id="btn-report" style="flex:1">📊 学习报告</button>
+    </div>
+    <div class="trail" id="trail"></div>
+  </section>
+
+  <!-- ============ STORY ============ -->
+  <section class="screen" id="scr-story">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-st-back">← 返回</button>
+      <h2>📖 第 1 章 · The Key in the Attic</h2>
+    </div>
+    <p class="wb-sub">推荐流程：先「🎧 盲听挑战」听两遍答大意题 → 展开原文精读（虚线词点释义）→ 开「点读」逐句跟读 → 做「读懂了吗」。</p>
+    <div class="eptabs" id="eptabs"></div>
+    <div class="audiobar" id="audiobar">
+      <button class="abtn" id="ab-play">▶️ 整节朗读</button>
+      <button class="abtn" id="ab-stop">⏹ 停止</button>
+      <button class="abtn" id="ab-rate">🐢 慢速：关</button>
+      <button class="abtn" id="ab-tap">👆 点读：关</button>
+      <select class="abtn" id="ab-voice" style="max-width:170px;display:none"></select>
+    </div>
+    <div class="ttsnote" id="ttsnote">朗读使用手机自带语音引擎。若无声音：请用 Safari / Chrome 打开（微信内置浏览器可能不支持），并确认未开静音键。</div>
+    <div id="st-body"></div>
+  </section>
+
+  <!-- ============ VOCAB BOOK ============ -->
+  <section class="screen" id="scr-vocab">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-vb-back">← 返回</button>
+      <h2>🔤 Unit 1 单词本</h2>
+    </div>
+    <p class="wb-sub">学词四步：故事里初见 → 这里集中学（点 🔊 跟读两遍，看例句）→ Anki 记住 → 第 3 站测试。周六默写前先来这里过一遍。</p>
+    <div class="audiobar">
+      <button class="abtn" id="vb-test">🙈 自测模式：关</button>
+      <button class="abtn" id="vb-playall">▶️ 全部连读</button>
+      <button class="abtn" id="vb-stopall">⏹ 停止</button>
+    </div>
+    <div id="vb-body"></div>
+  </section>
+
+  <!-- ============ EXTRA READING ============ -->
+  <section class="screen" id="scr-extra">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-ex-back">← 返回</button>
+      <h2>📚 泛读番外 · 考试题型训练</h2>
+    </div>
+    <p class="wb-sub">泛读要「快」：一遍读完直接做题，不逐句抠；生词能猜就猜。做完看建议用时对比一下速度。</p>
+    <div class="eptabs" id="extabs"></div>
+    <div class="audiobar"><button class="abtn" id="ex-play">▶️ 朗读本篇</button><button class="abtn" id="ex-stop">⏹ 停止</button></div>
+    <div id="ex-body"></div>
+  </section>
+
+  <!-- ============ LESSON ============ -->
+  <section class="screen" id="scr-lesson">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-ls-back">← 返回</button>
+      <h2 id="ls-title">📘 语法讲堂</h2>
+    </div>
+    <div id="ls-body"></div>
+  </section>
+
+  <!-- ============ WEEK PLAN ============ -->
+  <section class="screen" id="scr-plan">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-pl-back">← 返回</button>
+      <h2>🗓 本周学习计划</h2>
+    </div>
+    <p class="wb-sub">程序能追踪的任务<b>自动打勾</b>；跟读、录音、纸质、口语等线下任务，完成后<b>点一下手动打勾</b>。平日约 30 分钟，周末约 45 分钟。</p>
+    <div id="pl-prog" style="margin:0 2px 12px"></div>
+    <div id="pl-body"></div>
+  </section>
+
+  <!-- ============ REPORT ============ -->
+  <section class="screen" id="scr-report">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-rp-back">← 返回</button>
+      <h2>📊 学习报告</h2>
+    </div>
+    <div id="rp-body"></div>
+    <div class="wb-item" style="margin-top:14px">
+      <div class="wq">💾 存档迁移</div>
+      <div class="wmeta"><span>在设备之间转移进度，或防止浏览器清理数据导致丢档</span></div>
+      <textarea id="rp-save" style="width:100%;margin-top:10px;height:72px;background:#F8F4EB;border:1px solid var(--card-edge);border-radius:10px;color:var(--ink);font-size:11px;padding:8px;font-family:monospace"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="backbtn" id="btn-export" style="flex:1">导出到上方文本框</button>
+        <button class="backbtn" id="btn-import" style="flex:1">从文本框导入</button>
+      </div>
+      <button class="backbtn" id="btn-reset" style="width:100%;margin-top:10px;color:var(--coral);border-color:var(--coral)">🗑 重置全部进度（家长试玩后、正式交给孩子前使用）</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen" id="scr-quiz">
+    <div class="qtop">
+      <button class="backbtn" id="btn-quit">← 退出</button>
+      <div class="qprog"><i id="qbar"></i></div>
+      <div class="combo num" id="combo"></div>
+    </div>
+    <div class="qmeta"><span id="q-count" class="num"></span><span id="q-diff"></span><span id="q-flag"></span></div>
+    <div class="qcard airmail">
+      <div class="qtext" id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="inputrow" id="inputrow" style="display:none">
+        <input id="ans-input" type="text" autocomplete="off" autocapitalize="off" placeholder="type here">
+        <button id="btn-submit">确定</button>
+      </div>
+      <div id="orderwrap">
+        <div class="built empty" id="order-built"></div>
+        <div class="chips" id="order-chips"></div>
+        <div class="orderbtns">
+          <button id="btn-order-clear">↺ 重排</button>
+          <button id="btn-order-ok">✓ 确定</button>
+        </div>
+      </div>
+      <div class="feedback" id="feedback"><div class="fh" id="fb-head"></div><div id="fb-body"></div></div>
+      <button class="nextbtn" id="btn-next">下一题 →</button>
+    </div>
+    <div class="sessbar" id="sessbar" style="display:none">
+      <span class="lab" id="sess-name"></span>
+      <div class="mbar"><i id="sess-mbar"></i></div>
+      <span class="mpct num" id="sess-mpct"></span>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section class="screen" id="scr-result">
+    <div class="rescard airmail" id="rescard"></div>
+  </section>
+
+  <!-- ============ WRONG BOOK ============ -->
+  <section class="screen" id="scr-wrongbook">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-wb-back">← 返回</button>
+      <h2>📕 错题本</h2>
+    </div>
+    <p class="wb-sub">做错的题自动收录，之后会混进新的练习再考。同一道题连续答对 2 次即「出炉」。</p>
+    <div id="wb-list"></div>
+  </section>
+
+</div>
+<script>
+/* ============================================================
+   内容模块 —— Unit 1 You and Me ×《The Key in the Attic》
+   ============================================================ */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const en=s=>'<span class="en">'+s+'</span>';
+
+/* ---------- 故事：句子里 {word|中文} 为注释词 ---------- */
+const STORY=[
+ {t:'第 1 节',et:'The Old Box',sk:'s1',stamp:'🗝️',
+  paras:[
+   ["It is Saturday morning.","Tom is twelve, and he is a student in {Grade 7|七年级}.","Today he is not at school — he is in the {attic|阁楼} with Grandpa.","The attic is dark and {dusty|满是灰尘的}, and it is full of old boxes."],
+   ["\u201CGrandpa, look!\u201D Tom says.","Behind a broken chair, there is a small {wooden|木制的} box.","\u201COpen it!\u201D Grandpa smiles."],
+   ["Inside the box, there are three things: a yellow {letter|信}, a black-and-white photo and a small {key|钥匙}.","In the photo, a young girl is with a big dog.","\u201CWho is she?\u201D asks Tom.","\u201CShe is my sister, Mary,\u201D says Grandpa.","\u201CAnd the dog is her best friend, Biscuit.\u201D"],
+   ["Tom is {surprised|惊讶的}.","\u201CYour sister? Where is she now?\u201D","Grandpa is quiet for a moment.","\u201CIt is a long story,\u201D he says.","\u201CMaybe she is in Australia now.\u201D"],
+   ["Tom looks at the letter.","On it, there is a name: Mary Bell.","\u201CBell?\u201D","\u201CYes. Mary is her {first name|名}, and Bell is her {last name|姓},\u201D says Grandpa.","\u201CBell is my last name too. She is family.\u201D"],
+   ["\u201CAnd this key? What is it for?\u201D","Grandpa shakes his head.","\u201CThat is the {mystery|谜}. It is from her old room, but it is not for her door.\u201D"],
+   ["Tom holds the small key.","It is light, but it is heavy in his heart.","\u201CGrandpa,\u201D he says, \u201Clet's find her. Let's find Mary — {together|一起}.\u201D"]
+  ],
+  words:'<b>attic</b> 阁楼 · <b>dusty</b> 满是灰尘的 · <b>letter</b> 信 · <b>key</b> 钥匙 · <b>first name</b> 名 · <b>last name</b> 姓 · <b>mystery</b> 谜 · <b>together</b> 一起<br>句型：Who is she? / Where is she now? / She is my sister. / What is it for?',
+  gist:[
+   {q:'What do Tom and Grandpa find in the attic?',o:['An old wooden box','A new phone','A big dog'],a:0},
+   {q:'Who is the girl in the photo?',o:["Grandpa's sister","Tom's classmate","Tom's mum"],a:0}
+  ],
+  comp:[
+   {q:'Where are Tom and Grandpa?',o:['In the attic','At school','In Australia','In a shop'],a:0,ex:'第一段：he is in the attic with Grandpa。'},
+   {q:'What is NOT in the box?',o:['A red cap','A yellow letter','A photo','A small key'],a:0,ex:'盒子里是 letter、photo、key 三样，没有帽子。注意 NOT 题要选"没出现"的。'},
+   {q:"What is the girl's full name?",o:['Mary Bell','Bell Mary','Mary Biscuit','Emma Bell'],a:0,ex:'first name 在前、last name 在后：Mary Bell。Biscuit 是狗的名字！'}
+  ],
+  talk:['If you are Tom, are you excited or afraid? Why?（可中可英）','钥匙不是开她房门的，那你猜它开什么？','爷爷说 "It is a long story"，你觉得当年可能发生了什么？']
+ },
+ {t:'第 2 节',et:'A New Classmate',sk:'s2',stamp:'🎒',
+  paras:[
+   ["It is Monday morning.","Tom is in Class 3, {Grade 7|七年级}.","His {class teacher|班主任} is Ms Hu.","She is young and friendly."],
+   ["\u201CClass, we have a new {classmate|同学},\u201D says Ms Hu.","\u201CHer name is Emma White. Please {welcome|欢迎} her!\u201D","A girl with curly hair stands at the front.","\u201CHello, everyone! I am Emma. I am from Sydney, Australia.\u201D"],
+   ["Australia!","Tom's eyes are wide open."],
+   ["At lunchtime, Tom says hello.","\u201CHi! I am Tom Bell. Welcome to our school.\u201D","\u201CThanks! Nice to meet you, Tom.\u201D","\u201CAre you really from Sydney?\u201D","\u201CYes, I am. My mum is from China, and my dad is from the UK. But our home is in Sydney.\u201D"],
+   ["They talk {a lot|很多} and {get to know|认识；了解} {each other|互相}.","Emma is twelve too.","Her favourite thing is music — she is in a {band|乐队} with her {twin|双胞胎的} brother, Jack, and she plays the {guitar|吉他}.","\u201CTwins? So you and Jack are the {same|相同的} age!\u201D","\u201CRight! But we are not the same. He is quiet — and I am not!\u201D"],
+   ["Then Tom asks his big question.","\u201CEmma, my great-aunt is in Australia. Her name is Mary Bell. But we don't know where she is.\u201D","\u201CMary Bell?\u201D Emma's eyes are big.","\u201CBell... My {neighbour|邻居} in Sydney is Mrs Bell! She is old, and she has a big dog!\u201D"],
+   ["Tom is excited.","\u201CIs her dog's name Biscuit?\u201D","\u201CSorry, I am not sure,\u201D says Emma.","\u201CAnd maybe it is a {mistake|错误} — Bell is a common last name.\u201D","\u201COr maybe,\u201D says Tom, \u201Cit is not a mistake. Maybe it is a {clue|线索}!\u201D"]
+  ],
+  words:'<b>classmate</b> 同学 · <b>class teacher</b> 班主任 · <b>get to know</b> 认识 · <b>each other</b> 互相 · <b>twin</b> 双胞胎的 · <b>band</b> 乐队 · <b>guitar</b> 吉他 · <b>same</b> 相同的 · <b>mistake</b> 错误 · <b>a lot</b> 很多<br>句型：Are you from ...? — Yes, I am. / We are not the same. / I am not sure.',
+  gist:[
+   {q:'Who is the new classmate?',o:['Emma from Sydney','Jack from the UK','Mary from China'],a:0},
+   {q:'What is the big news for Tom?',o:["Emma's neighbour is Mrs Bell","Emma plays the guitar","Ms Hu is friendly"],a:0}
+  ],
+  comp:[
+   {q:'Where is Emma from?',o:['Sydney, Australia','London, the UK','Beijing, China','New York, the US'],a:0,ex:'她自我介绍：I am from Sydney, Australia。妈妈来自中国、爸爸来自英国是家庭背景，别混淆。'},
+   {q:'Who is Jack?',o:["Emma's twin brother","Tom's classmate in Class 3","Emma's neighbour","Ms Hu's son"],a:0,ex:'she is in a band with her twin brother, Jack。'},
+   {q:'Why is Tom excited at the end?',o:["Emma's neighbour's last name is Bell","Emma is good at music","Jack is quiet","Ms Hu is young"],a:0,ex:'邻居姓 Bell、年长、有大狗——三个特征都对上了 Mary，这就是 clue（线索）。'}
+  ],
+  talk:['Emma 说 "maybe it is a mistake"，Tom 说 "maybe it is a clue"。你站谁？为什么？','用英语介绍一下 Emma（3 句以上）：Her name is ... She is from ... She is ...','你转学第一天会怎么交朋友？']
+ },
+ {t:'第 3 节',et:'The Yellow Letter',sk:'s3',stamp:'💌',
+  paras:[
+   ["After school, Tom and Emma are at Tom's home.","The yellow letter is on the desk.","It is very old, and some words are not {clear|清楚的}."],
+   ["Emma reads it slowly:","\u201CDear brother,","I am fine. I am in Sydney now. My days are busy but happy.","I play the guitar in a small band. My friends here are kind to me.","Please don't be angry with me.","The key is for our {special|特别的} place. You know it well.","Love, Mary.\u201D"],
+   ["\u201COur special place?\u201D says Emma. \u201CWhat is it?\u201D","\u201CI don't know,\u201D says Tom. \u201CAnd Grandpa says he doesn't {remember|记得}.\u201D"],
+   ["Emma looks at the photo again.","\u201CTom! Look at the dog's {collar|项圈}!\u201D","On it, there are three small letters: B. M. B.","\u201CBiscuit... M... B?\u201D","\u201COr maybe it is a name,\u201D says Emma. \u201CB. M. Bell!\u201D"],
+   ["\u201COK,\u201D says Emma. \u201CHere is my {plan|计划}.","My friends are in Sydney. Maybe they know Mrs Bell.","But first — they don't know you.","Let's make a {profile|个人档案} for you!\u201D"],
+   ["She opens a notebook and writes five questions:","What is your full name?","How old are you?","What grade are you in?","Where are you from?","Why is Mary important to you?"],
+   ["\u201CNow it is your turn, Tom,\u201D Emma smiles.","\u201CTell the world about you.\u201D"]
+  ],
+  words:'<b>clear</b> 清楚的 · <b>special</b> 特别的 · <b>remember</b> 记得 · <b>collar</b> 项圈 · <b>plan</b> 计划 · <b>profile</b> 个人档案 · <b>full name</b> 全名<br>句型：What grade are you in? / How old are you? / Why is ... important to you?',
+  gist:[
+   {q:'Where is Mary (from the letter)?',o:['In Sydney','In London','At Tom\u2019s home'],a:0},
+   {q:'What is Emma\u2019s plan?',o:['Make a profile for Tom','Buy a new dog','Call Ms Hu'],a:0}
+  ],
+  comp:[
+   {q:'What is the key for?',o:["Their special place","Mary's door","The wooden box","Emma's home"],a:0,ex:'信里写：The key is for our special place。第 1 节也说过它不是开房门的。'},
+   {q:'What is on the dog\u2019s collar?',o:['Three letters: B. M. B.','A small key','A phone number','A photo'],a:0,ex:'On it, there are three small letters: B. M. B. —— 新线索！'},
+   {q:'Why does Emma make five questions?',o:["To make Tom's profile","To do her homework","To test Grandpa","To write to Mary"],a:0,ex:"Emma 的计划：先给 Tom 做一份 profile，悉尼的朋友们才能认识他、帮忙找人。"}
+  ],
+  talk:['信里说 "Please don\u2019t be angry with me."，Mary 当年为什么可能这样写？','B. M. B. 三个字母，你有几种猜想？','如果你给悉尼的陌生朋友写自我介绍，最想让对方知道你的哪三件事？']
+ }
+];
+
+/* ---------- Unit 1 默写词库（第 3 站用）---------- */
+const W1=[
+ {en:'classmate',cn:'同班同学',s:'Emma is my new ______.'},
+ {en:'grade',cn:'年级',s:'What ______ are you in?'},
+ {en:'country',cn:'国家',s:'Australia is a big ______.'},
+ {en:'band',cn:'乐队',s:'They play music in a ______.'},
+ {en:'guitar',cn:'吉他',s:'She plays the ______ very well.'},
+ {en:'twin',cn:'双胞胎的',s:'Jack is her ______ brother.'},
+ {en:'same',cn:'相同的',s:'We are in the ______ class.'},
+ {en:'mistake',cn:'错误',s:'Sorry, it is my ______.'},
+ {en:'letter',cn:'信',s:'There is a yellow ______ in the box.'},
+ {en:'key',cn:'钥匙',s:'The small ______ is a mystery.'},
+ {en:'welcome',cn:'欢迎',s:'______ to our school!'},
+ {en:'friend',cn:'朋友',s:'Tom is my good ______.'},
+ {en:'music',cn:'音乐',s:'Her favourite thing is ______.'},
+ {en:'photo',cn:'照片',s:'Look at this old ______.'},
+ {en:'student',cn:'学生',s:'Tom is a ______ in Grade 7.'},
+ {en:'teacher',cn:'老师',s:'Ms Hu is our class ______.'},
+ {en:'first name',cn:'名（首名）',s:'Mary is her ______ .'},
+ {en:'last name',cn:'姓',s:'Bell is his ______ .'},
+ {en:'special',cn:'特别的',s:'The key is for our ______ place.'},
+ {en:'remember',cn:'记得',s:'Grandpa doesn\u2019t ______ the place.'}
+];
+
+/* ---------- 泛读番外（考试题型训练，i 难度）---------- */
+const EXTRA=[
+ {id:'x0',et:'Hello Around the World',tag:'📚 泛读 · 文化短文 · 建议 6 分钟读完+做题',stamp:'🌏',
+  paras:[
+   ["How do people say hello around the world?","The ways are different, but they all mean the same thing: \u201CIt is nice to meet you!\u201D"],
+   ["In China, people often say \u201Cnǐ hǎo\u201D and smile.","Good friends sometimes {shake hands|握手}."],
+   ["In New Zealand, the Maori people touch noses to say hello.","It is their special way, and it is very friendly."],
+   ["In Japan, people do not usually touch each other.","They {bow|鞠躬} to say hello.","The lower the bow is, the more respect they show."],
+   ["In France, close friends kiss on the {cheek|脸颊}.","In Thailand, people put their hands together and bow their heads a little."],
+   ["Different countries, different hellos — but a warm hello always makes friends.","What about you?","How do you say hello?"]
+  ],
+  qs:[
+   {q:'What is the passage mainly about?',o:['Ways of saying hello around the world','How to make friends in China','Why Japanese people are quiet','Schools in different countries'],a:0,ex:'主旨题：全文围绕"各国的问候方式"。做主旨题看首段和尾段。'},
+   {q:'In Japan, people usually ___ to say hello.',o:['bow','touch noses','kiss on the cheek','shake hands'],a:0,ex:'细节题回原文定位：In Japan ... They bow to say hello。'},
+   {q:'Which way is NOT in the passage?',o:['Waving a flag','Touching noses','Kissing on the cheek','Putting hands together'],a:0,ex:'NOT 题要选"文中没出现的"。挥旗子没有提到。'},
+   {q:'\u201CThe lower the bow is, the more respect they show.\u201D The word \u201Crespect\u201D probably means ___.',o:['尊敬','生气','礼物','害怕'],a:0,ex:'猜词题：鞠躬越低，表达的"某种东西"越多——结合礼节场景，是"尊敬"。猜词看前后文逻辑。'},
+   {q:'Why does the writer ask \u201CHow do you say hello?\u201D at the end?',o:['To make readers think about their own way','To teach a new word','To say goodbye to readers','To show the writer is from France'],a:0,ex:'目的/推断题：结尾提问是邀请读者联系自身、参与思考——说明文常用收尾法。'}
+  ]},
+ {id:'x1',et:'HELP US FIND MARY BELL',tag:'📚 泛读 · 应用文（寻人帖）· 建议 5 分钟读完+做题',stamp:'📌',
+  paras:[
+   ["Hi, friends in Sydney! I am Emma White, from Beechworth Street.","I am in China now, but my heart is with you!"],
+   ["This is my classmate, Tom Bell.","He is twelve, and he is in Grade 7.","He is kind and a little {shy|害羞的}."],
+   ["We {look for|寻找} his great-aunt. Her name is Mary Bell.","She is Tom's grandpa's sister, and she is about seventy.","Maybe she is in Sydney."],
+   ["Here is what we know:","She plays the guitar.","Her old dog's name is Biscuit.","The letters on the dog's collar are B. M. B."],
+   ["Is Mrs Bell your neighbour?","Is there an old lady with a guitar near you?","Please write to us! Every little clue is important."],
+   ["Thank you a lot! — Emma & Tom"]
+  ],
+  qs:[
+   {q:'Where can you probably see this post?',o:['On the Internet','In a maths book','On a food menu','In a music CD'],a:0,ex:'文体题：这是发给悉尼朋友们的网络寻人帖（post）。判断文体看格式和称呼。'},
+   {q:'How old is Mary Bell?',o:['About seventy','Twelve','About thirty','Seventeen'],a:0,ex:'细节题定位：she is about seventy。别和 Tom 的 twelve 混淆。'},
+   {q:'What do Emma and Tom know about Mary?<br>a. She plays the guitar. &nbsp;b. Her dog is Biscuit. &nbsp;c. The letters B. M. B. &nbsp;d. Her phone number',o:['a, b, c','a, b, d','b, c, d','a, c, d'],a:0,ex:'组合细节题：逐项回原文核对，电话号码没有提到。这是期中卷高频题型。'},
+   {q:'\u201CWe look for his great-aunt.\u201D Here \u201Clook for\u201D means ___.',o:['寻找','看着','照顾','喜欢'],a:0,ex:'猜词题：全文都在"找"Mary，look for = 寻找。look at 看着 / look after 照顾，注意区分。'},
+   {q:'Why does Emma write this post?',o:['To ask her Sydney friends for clues','To sell a guitar','To find a new dog','To say goodbye to Tom'],a:0,ex:'目的题：结尾 Please write to us! Every little clue is important. 就是在向朋友们求线索。'}
+  ]}
+];
+
+/* ---------- 语法讲堂（站点前置微课）---------- */
+const LESSON={
+ s1:{title:'📘 讲堂 1 · be 动词与人称代词',sub:'例句全部来自你刚读过的故事',
+  obs:['Tom <b>is</b> twelve, and he <b>is</b> a student in Grade 7.',
+       'I <b>am</b> Emma. I <b>am</b> from Sydney, Australia.',
+       'So you and Jack <b>are</b> the same age!',
+       'He is quiet — and I <b>am not</b>!',
+       '—<b>Are</b> you really from Sydney? —Yes, I <b>am</b>.'],
+  obsHint:'先自己观察 30 秒：什么时候用 am / is / are？否定句和问句里，be 动词发生了什么变化？',
+  rules:'<b>① 三分法</b>：I → am ｜ he / she / it / 单数名词 → is ｜ you / we / they / 复数 → are<br>'+
+        '<b>② 否定</b>：be 后面加 not → isn\u2019t / aren\u2019t（I am not 没有缩写形式）<br>'+
+        '<b>③ 一般疑问</b>：把 be 搬到句首 → Are you...? 答语人称要<b>换位</b>：问 you，答 I → Yes, I am.（肯定简答不缩写）<br>'+
+        '<b>④ 代词两件套</b>：做主语用主格 I / you / he / she / it / we / they；名词前用 my / your / his / her / its / our / their。<br>'+
+        '⚠️ 高频陷阱：<b>its</b> = 它的，<b>it\u2019s</b> = it is。中文没有"是"英文也不能丢 be：She <b>is</b> from Sydney.',
+  checks:[
+   {q:'—'+'<span class="en">Is Emma from the UK?</span>'+' —<span class="en">No, ___.</span>',o:['<span class="en">she isn\u2019t</span>','<span class="en">she is</span>','<span class="en">it isn\u2019t</span>','<span class="en">I\u2019m not</span>'],a:0,ex:'问 Emma 答 she；No 配否定 isn\u2019t。'},
+   {q:'<span class="en">Look at the dog. ___ name is Biscuit.</span>',o:['<span class="en">Its</span>','<span class="en">It\u2019s</span>','<span class="en">Her</span>','<span class="en">It</span>'],a:0,ex:'名词 name 前用物主代词 Its（它的）。It\u2019s = It is，放这里句子就错了。'}
+  ]},
+ s2:{title:'📘 讲堂 2 · 应用题解题三招',sub:'期中卷上的题，全是这三类',
+  obs:['<b>补全对话</b>：—___? —I am in Class 3, Grade 7. ← 先读<b>答句</b>：答的是班级，所以问 What class are you in?',
+       '<b>连词成句</b>：is / Emma / Sydney / from ← 先抓「主语 + be」骨架（Emma is），再挂其他（from Sydney）。',
+       '<b>阅读理解</b>：题目问 How old is Leo? ← 回原文<b>定位</b>数字，别凭印象。'],
+  obsHint:'看三个例子，注意加粗的解题动作：',
+  rules:'<b>① 补全对话</b>：空在问句 → 看答句反推（答年龄→How old / 答地点→Where / 答班级→What class）；空在答句 → 注意人称换位和 Yes/No 一致。<br>'+
+        '<b>② 连词成句</b>：第一步找主语和 be；问句把 be 提前；写完检查<b>首字母大写</b>和<b>标点</b>。<br>'+
+        '<b>③ 阅读理解</b>：每题回原文定位再作答；NOT/EXCEPT 题选"文中没有的"；猜词题看前后句的解释；主旨题看首尾段。',
+  checks:[
+   {q:'—<span class="en">___?</span> —<span class="en">She is from Sydney.</span>',o:['<span class="en">Where is she from</span>','<span class="en">How old is she</span>','<span class="en">Who is she</span>','<span class="en">What class is she in</span>'],a:0,ex:'答句是地点，反推问 Where。'},
+   {q:'连词成句时第一步应该找什么？',o:['主语和 be 动词','最长的单词','中文里的第一个词','形容词'],a:0,ex:'先搭「主语 + be」骨架，其余成分再挂上去。'}
+  ]},
+ s3:{title:'📘 讲堂 3 · 单词怎么记才牢',sub:'期中卷第四大题：看汉语写单词，靠的是这三招',
+  obs:['<b>音节拆读</b>：classmate → class·mate；guitar → gui·tar。<b>读出来再拼</b>，比死背字母串牢一倍。',
+       '<b>词不离句</b>：记 Emma is my classmate. 而不是只记 c-l-a-s-s-m-a-t-e——考试就是在句子里考。',
+       '<b>错词回炉</b>：这一站拼错的词自动进错题本，连对两次才出炉；Anki 负责一周后还记得。'],
+  obsHint:'默写不是靠盯着单词表看，而是靠「测试自己」：',
+  rules:'<b>本站玩法</b>：一半题是"句子挖空＋中文提示"（和期中卷完全同款），一半是<b>听音拼写</b>（点 🔊 听单词再拼出来，同时练听力和拼写）。<br>'+
+        '拼写小规则：a lot 是<b>两个词</b>；专有名词 Sydney、Australia 首字母大写；名词该加复数时别忘 s。',
+  checks:[
+   {q:'「很多」的英文写法是？',o:['<span class="en">a lot</span>（两个词）','<span class="en">alot</span>','<span class="en">a lots</span>','<span class="en">lots a</span>'],a:0,ex:'a lot 永远是两个词。They talk a lot.'},
+   {q:'记单词最有效的方式是？',o:['放进句子里，边读边拼','盯着单词表看十分钟','抄写一百遍不读音','考前一晚全部背'],a:0,ex:'词不离句 + 读音拆拼 + 反复自测（错题回炉/Anki），是记忆研究反复验证的组合。'}
+  ]}
+};
+
+const SUBJECT = {
+  id:'trek-english-v2',
+  skills:[
+    {key:'s1', icon:'🧱', name:'第 1 站 · 语言基石', alt:'Unit 1 · be 动词一般现在时 + 人称代词 · 配合故事第 1 节'},
+    {key:'s2', icon:'🕵️', name:'第 2 站 · 实战应用', alt:'Unit 1 · 补全对话 · 连词成句 · 语篇与阅读 · 配合故事第 2 节'},
+    {key:'s3', icon:'🔤', name:'第 3 站 · 单词关', alt:'Unit 1 · 看中文默写 + 听音拼写 · 对应期中「单词拼写」题型 · 配合故事第 3 节'}
+  ],
+  soon:[
+    {icon:'🔒', name:'第 2 章 · 家谱上的秘密', alt:'Unit 2 We\u2019re Family! · 悉尼的 Mrs Bell 到底是谁？'},
+    {icon:'🔒', name:'第 3 章 · 特别的地方', alt:'Unit 3 My School · 钥匙的秘密在校园里？'},
+    {icon:'🔒', name:'第 4 章 · 悉尼来信', alt:'Unit 4 My Favourite Subject · 第一封回信'}
+  ],
+  /* -------- 行前体检（小学核心，快速摸底）-------- */
+  diag:[
+    {id:'d1',type:'mc',tag:'词汇',q:'「老师」的英文是？',opts:[en('teacher'),en('doctor'),en('farmer'),en('driver')],a:0,ex:'teacher 老师。'},
+    {id:'d2',type:'mc',tag:'词汇',q:en('Wednesday')+' 指的是？',opts:['星期三','星期二','三月','下午'],a:0,ex:'Wednesday 星期三，注意拼写里的 dnes。'},
+    {id:'d3',type:'mc',tag:'日常对话',q:'别人说 '+en('Thank you!')+'，你回答？',opts:[en("You're welcome."),en('Yes, I am.'),en("I'm ten."),en('Goodbye.')],a:0,ex:'常用回应：You\u2019re welcome. / That\u2019s OK.'},
+    {id:'d4',type:'mc',tag:'日常对话',q:'—'+en('How old are you?')+' —？',opts:[en("I'm twelve."),en("I'm fine."),en("It's nine."),en("I'm Tom.")],a:0,ex:'How old 问年龄。'},
+    {id:'d5',type:'mc',tag:'be 动词',q:en('I ___ a student.'),opts:[en('am'),en('is'),en('are'),en('be')],a:0,ex:'I 永远搭配 am。'},
+    {id:'d6',type:'mc',tag:'be 动词',q:en('They ___ my friends.'),opts:[en('are'),en('am'),en('is'),en('be')],a:0,ex:'they 复数搭配 are。'},
+    {id:'d7',type:'mc',tag:'代词',q:'「这是<b>我的</b>书」：'+en('This is ___ book.'),opts:[en('my'),en('I'),en('me'),en('mine ')],a:0,ex:'名词前用 my。'},
+    {id:'d8',type:'mc',tag:'代词',q:en('Look at Tom. ___ is tall.'),opts:[en('He'),en('She'),en('It'),en('His')],a:0,ex:'Tom 是男生，作主语用 He。'},
+    {id:'d9',type:'mc',tag:'冠词',q:en("It's ___ apple."),opts:[en('an'),en('a'),en('the a'),'不填'],a:0,ex:'apple 元音开头用 an。'},
+    {id:'d10',type:'mc',tag:'疑问句',q:'—'+en('___ is your bag?')+' —'+en("It's black."),opts:[en('What colour'),en('How old'),en('Where'),en('Who')],a:0,ex:'回答是颜色，所以问 What colour。'}
+  ],
+  /* -------- 精编题库 -------- */
+  items:[
+   /* ===== s1 语言基石：be 动词全型 + 代词 ===== */
+   {skill:'s1',d:1,type:'mc',q:en('Emma and Jack ___ twins.'),opts:[en('are'),en('is'),en('am'),en('be')],a:0,ex:'A and B 是复数主语，用 are。'},
+   {skill:'s1',d:1,type:'mc',q:en('Tom ___ in Grade 7 this year.'),opts:[en('is'),en('am'),en('are'),en('be')],a:0,ex:'Tom 第三人称单数，用 is。'},
+   {skill:'s1',d:1,type:'mc',q:'—'+en('Are you from Sydney?')+' —'+en('Yes, ___.'),opts:[en('I am'),en('I is'),en("you are"),en('I do')],a:0,ex:'Are you...? 用 I 回答：Yes, I am. / No, I\u2019m not。简略答语里 am 不能缩写。'},
+   {skill:'s1',d:2,type:'mc',q:en('Jack is quiet, but Emma ___ quiet at all.'),opts:[en("isn't"),en("aren't"),en("am not"),en("not is")],a:0,ex:'否定式 = be + not：Emma 单数用 isn\u2019t。not at all 一点也不。'},
+   {skill:'s1',d:2,type:'mc',q:en('This is Mary. ___ dog is big, and ___ name is Biscuit.'),opts:[en('Her; its'),en('His; its'),en("She; it's"),en('Her; it')],a:0,ex:'Mary 的狗 → Her dog；狗的名字 → its name（its 是"它的"，it\u2019s = it is，考试高频陷阱！）。'},
+   {skill:'s1',d:2,type:'mc',q:en('Tom and I ___ in the same class. ___ are good friends.'),opts:[en('are; We'),en('am; We'),en('are; They'),en('is; We')],a:0,ex:'Tom and I = we（我们），复数用 are；后句主语接着用 We。'},
+   {skill:'s1',d:2,type:'in',q:en("Emma's mum ___ (be) from China.")+'（填 be 动词的正确形式）',a:'is',ex:'Emma\u2019s mum 是第三人称单数 → is。'},
+   {skill:'s1',d:2,type:'mc',q:'—'+en('___ Emma and Jack in the same band?')+' —'+en('Yes, they are.'),opts:[en('Are'),en('Is'),en('Am'),en('Do')],a:0,ex:'主语 Emma and Jack 复数，一般疑问句把 Are 提前。'},
+   {skill:'s1',d:3,type:'mc',q:'—'+en('Is Bell her first name?')+' —'+en('No, ___. Bell is her last name.'),opts:[en("it isn't"),en("she isn't"),en("it is"),en("isn't it")],a:0,ex:'问的是 Bell 这个"名字"（物），答语用 it：No, it isn\u2019t。后文说它是姓，所以否定。'},
+   {skill:'s1',d:3,type:'mc',q:en('___ am Tom. ___ grandpa has a mystery box, and the key in ___ is small.'),opts:[en('I; My; it'),en('I; Me; it'),en('My; I; its'),en('I; My; its')],a:0,ex:'主语 I；名词 grandpa 前用 My；介词 in 后接宾格 it（在盒子里面的钥匙）。'},
+   {skill:'s1',d:3,type:'mc',q:'下列句子<b>有错误</b>的一项是？',opts:[en('Where is she from? — She from Sydney.'),en('We are not in Class 5.'),en('Is your dad a teacher? — Yes, he is.'),en('I am not sure.')],a:0,ex:'答句缺 be 动词：She <b>is</b> from Sydney。中文没有"是"也要说通，英文里 be 动词不能丢——这是七年级最高频的失分点。'},
+   {skill:'s1',d:3,type:'in',q:en('They are in Grade 7.')+'（改为一般疑问句，写出第一个单词）',a:'are',ex:'be 动词提前：<b>Are</b> they in Grade 7? 首字母大写（判分不区分大小写）。'},
+
+   /* ===== s2 实战应用：对话 · 连词成句 · 语篇 · 阅读 ===== */
+   {skill:'s2',d:1,type:'mc',q:'<span class="mat">💬 '+en('A: Hi! I am Tom. ___<br>B: My name is Emma White.')+'</span>选择填入横线的句子：',opts:[en("What's your name?"),en('How are you?'),en('Where are you from?'),en('How old are you?')],a:0,ex:'答句报了姓名，所以问名字。补全对话先看"答句"再定"问句"。'},
+   {skill:'s2',d:1,type:'order',q:'连词成句（点击单词按顺序组句）：<br>「Emma 来自悉尼。」',words:['Emma','is','from','Sydney'],a:'Emma is from Sydney',ex:'主语 + be + from + 地点：Emma is from Sydney.'},
+   {skill:'s2',d:2,type:'order',q:'连词成句：<br>「她的名是 Mary。」',words:['her','first','name','is','Mary'],a:'her first name is Mary',ex:'Her first name is Mary. 物主代词 + 名词短语作主语，be 动词放中间。'},
+   {skill:'s2',d:2,type:'mc',q:'<span class="mat">💬 '+en('A: ___<br>B: I am in Class 3, Grade 7.')+'</span>选择填入横线的句子：',opts:[en('What class are you in?'),en('Where is your class?'),en('How is your class?'),en('Who is in Grade 7?')],a:0,ex:'答句是"班级+年级"，问"你在哪个班"：What class are you in? 注意 in 放句尾。'},
+   {skill:'s2',d:2,type:'mc',q:'<span class="mat">📄 '+en('Hi, I am Emma White. I am 12. My mum is Chinese ___ my dad is English. Jack and I are twins, but we are not the same.')+'</span>横线处应填：',opts:[en('and'),en('but'),en('or'),en('so')],a:0,ex:'前后是并列关系（妈妈……爸爸……），用 and。but 表转折，后一句"but we are not the same"就是转折。'},
+   {skill:'s2',d:2,type:'order',q:'连词成句：<br>「你们在同一个班吗？」',words:['are','you','in','the','same','class'],a:'are you in the same class',ex:'一般疑问句 be 提前：Are you in the same class? 句尾加问号。'},
+   {skill:'s2',d:3,type:'mc',q:'<span class="mat">💬 '+en("A: Emma, this is my grandpa.<br>B: Nice to meet you, Mr Bell! ___<br>C: I'm fine, thanks. Are you Tom's new classmate?<br>B: Yes, I am.")+'</span>B 处应填：',opts:[en('How are you?'),en('How old are you?'),en('Who are you?'),en("What's your name?")],a:0,ex:'C 回答 I\u2019m fine, thanks，所以 B 问的是 How are you? 三人对话题：顺着"下一句的回答"倒推。'},
+   {skill:'s2',d:3,type:'mc',q:'<span class="mat">📖 '+en("Post from Sydney:<br>Hello! My name is Leo Chen. I am eleven, and I am in Grade 6. My neighbour is Mrs Bell. She is old but she is not quiet — she plays the guitar every evening! Her dog is big and friendly.")+'</span>Which is TRUE about Mrs Bell?',opts:[en('She plays the guitar.'),en('She is Leo\u2019s classmate.'),en('She is quiet.'),en('Her dog is small.')],a:0,ex:'原文：she plays the guitar every evening。她是 neighbour 不是 classmate；not quiet；狗是 big。判断题逐项回原文核对。'},
+   {skill:'s2',d:3,type:'mc',q:'<span class="mat">📖 （接上文 Leo 的帖子）</span>'+en('How old is Leo, and what grade is he in?'),opts:[en('Eleven, Grade 6'),en('Twelve, Grade 7'),en('Eleven, Grade 7'),en('Ten, Grade 6')],a:0,ex:'I am eleven, and I am in Grade 6。数字信息题：回原文定位，别凭印象。'},
+   {skill:'s2',d:3,type:'order',q:'连词成句：<br>「为什么 Mary 对你很重要？」',words:['why','is','Mary','important','to','you'],a:'why is Mary important to you',ex:'特殊疑问句 = 疑问词 + be + 主语 + 其他：Why is Mary important to you? —— 这正是 Tom 档案里的最后一问。'},
+
+   /* ===== s3 单词关：默写与听写（期中第四题风格） ===== */
+   {skill:'s3',d:1,type:'in',q:en('My ______ name is Bell, and my first name is Tom.')+'（姓，写出单词）',a:'last',ex:'last name 姓（在后），first name 名（在前）。整句：My <b>last</b> name is Bell.'},
+   {skill:'s3',d:2,type:'in',q:'写出短语中缺的词：'+en('get to ______ each other')+'（互相认识）',a:'know',ex:'get to <b>know</b> each other 互相认识。课本 Unit 1 核心短语。'},
+   {skill:'s3',d:2,type:'in',q:en('Nice to ______ you, Emma!')+'（见到，写出单词）',a:'meet',ex:'Nice to <b>meet</b> you! 初次见面用 meet，不要写成 see。'},
+   {skill:'s3',d:3,type:'in',q:en('They talk a ______ and become good friends.')+'（很多，写出单词）',a:'lot',ex:'a <b>lot</b> 很多。注意是两个词 a lot，不是 alot。'}
+  ],
+  /* -------- 参数化生成器 -------- */
+  gens:{
+   s1:[
+    {gid:'g1a',d:1,make(){ const P=[
+        {s:'I',v:'am'},{s:'You',v:'are'},{s:'He',v:'is'},{s:'She',v:'is'},{s:'It',v:'is'},
+        {s:'Emma',v:'is'},{s:'We',v:'are'},{s:'They',v:'are'},{s:'Tom and Emma',v:'are'},
+        {s:"Emma's dad",v:'is'},{s:'The twins',v:'are'},{s:'My class teacher',v:'is'},{s:'Her friends',v:'are'}];
+      const c=pick(P), tail=pick(['in Class 3','from Australia','at school today','very friendly','in the music band']);
+      const wrong=['am','is','are'].filter(v=>v!==c.v);
+      return {type:'mc', q:en(c.s+' ___ '+tail+'.'), opts:[en(c.v),en(wrong[0]),en(wrong[1]),en('be')], a:0,
+        ex:'be 动词三分法：I→am；he/she/it 及单数名词→is；you/we/they 及复数→are。「'+c.s+'」属于'+(c.v==='am'?'第一人称 I':c.v==='is'?'三单':'复数/you')+'，用 '+c.v+'。'};}},
+    {gid:'g1b',d:2,make(){ const P=[
+        ['Tom','he'],['Emma','she'],['the key','it'],['Tom and I','we'],['you and Emma','you'],
+        ['Emma and Jack','they'],['the big dog','it'],['my grandpa','he'],['Mary','she'],['the letters','they'],['Ms Hu','she']];
+      const c=pick(P);
+      const wrong=shuffle(['he','she','it','we','you','they'].filter(x=>x!==c[1])).slice(0,3);
+      return {type:'mc', q:'用代词替换画线部分：'+en('<u>'+c[0]+'</u> ___')+ ' → 应该用哪个主格代词？',
+        opts:[en(c[1]),en(wrong[0]),en(wrong[1]),en(wrong[2])], a:0,
+        ex:'「'+c[0]+'」'+(c[1]==='we'?'包含"我"，用 we':c[1]==='they'?'是复数（不含我/你），用 they':c[1]==='it'?'是物/动物，用 it':'按人称性别选 '+c[1])+'。'};}},
+    {gid:'g1c',d:2,make(){ const P=[
+        {ans:'Sydney.',qz:'Where are you from?',w:['How old are you?','What class are you in?','Who is your teacher?']},
+        {ans:'Twelve.',qz:'How old are you?',w:['Where are you from?','What grade are you in?','How are you?']},
+        {ans:'Mary Bell.',qz:"What's her full name?",w:['Where is she?','How is she?','What class is she in?']},
+        {ans:'Grade 7.',qz:'What grade are you in?',w:['How old are you?','Where are you from?','Who is she?']},
+        {ans:'She is my classmate.',qz:'Who is that girl?',w:['Where is that girl?','How old is she?','What colour is it?']},
+        {ans:'I\u2019m fine, thanks.',qz:'How are you?',w:['How old are you?','Who are you?','Where are you?']}];
+      const c=pick(P);
+      return {type:'mc', q:'—'+en('___')+' —'+en(c.ans)+'<br>选择正确的问句：',
+        opts:[en(c.qz),en(c.w[0]),en(c.w[1]),en(c.w[2])], a:0,
+        ex:'看答语定问句：回答「'+c.ans+'」对应问「'+c.qz+'」。Where 问地点、How old 问年龄、What grade 问年级、Who 问人。'};}},
+    {gid:'g1d',d:3,make(){ const P=[
+        {qz:'Is Emma from the UK?',ans:'No, she isn\u2019t.',w:['No, she is.','Yes, she isn\u2019t.','No, it isn\u2019t.'],ex:'主语 Emma → she；No 后接否定 isn\u2019t，前后要一致。'},
+        {qz:'Are you and Jack twins?',ans:'Yes, we are.',w:['Yes, you are.','Yes, we is.','Yes, they are.'],ex:'问 you and Jack（你们），答用 we。'},
+        {qz:'Is the key for her door?',ans:'No, it isn\u2019t.',w:['No, she isn\u2019t.','Yes, it is not.','No, it is.'],ex:'物用 it；No 配 isn\u2019t。'},
+        {qz:'Am I late?',ans:'No, you aren\u2019t.',w:['No, I am not.','No, you isn\u2019t.','Yes, I am.'],ex:'别人问 Am I...?，你答对方 you aren\u2019t。人称要"换位"。'},
+        {qz:'Are Tom and Emma in the same class?',ans:'Yes, they are.',w:['Yes, we are.','Yes, they is.','Yes, he is.'],ex:'第三方复数 → they are。'}];
+      const c=pick(P);
+      return {type:'mc', q:'—'+en(c.qz)+' —'+en('___'),
+        opts:[en(c.ans),en(c.w[0]),en(c.w[1]),en(c.w[2])], a:0, ex:c.ex};}}
+   ],
+   s2:[
+    {gid:'g2a',d:2,make(){ const P=[
+        {cn:'他们不在同一个乐队里。',w:['they','are','not','in','the','same','band'],a:'they are not in the same band'},
+        {cn:'我的班主任来自北京。',w:['my','class','teacher','is','from','Beijing'],a:'my class teacher is from Beijing'},
+        {cn:'那把钥匙对爷爷很特别。',w:['the','key','is','special','to','Grandpa'],a:'the key is special to Grandpa'},
+        {cn:'她的邻居是 Bell 太太吗？',w:['is','her','neighbour','Mrs','Bell'],a:'is her neighbour Mrs Bell'},
+        {cn:'认识你很高兴。',w:['nice','to','meet','you'],a:'nice to meet you'},
+        {cn:'Emma 和 Jack 同岁。',w:['Emma','and','Jack','are','the','same','age'],a:'Emma and Jack are the same age'}];
+      const c=pick(P);
+      return {type:'order', q:'连词成句（点击单词按顺序组句）：<br>「'+c.cn+'」', words:c.w.slice(), a:c.a,
+        ex:'参考语序：'+c.a.charAt(0).toUpperCase()+c.a.slice(1)+(c.a.startsWith('is')?'?':'.')+' 先找主语和 be 动词，再挂其他成分。'};}},
+    {gid:'g2b',d:2,make(){ const P=[
+        {di:'A: ___ <br>B: She is my great-aunt, Mary.',qz:'Who is the girl in the photo?',w:['Where is the photo?','How is Mary?','What colour is it?']},
+        {di:'A: Is your home in Sydney? <br>B: ___ We are in China now.',qz:'No, it isn\u2019t.',w:['Yes, it is.','No, I\u2019m not.','No, they aren\u2019t.']},
+        {di:'A: ___ <br>B: B-E-L-L, Bell.',qz:'How do you spell your last name?',w:['What is your last name?','Where is Bell?','Who is Mr Bell?']},
+        {di:'A: Welcome to our class, Emma! <br>B: ___',qz:'Thank you!',w:['You\u2019re welcome!','Yes, I am.','I\u2019m not sure.']},
+        {di:'A: I\u2019m sorry, my mistake. <br>B: ___',qz:'That\u2019s OK.',w:['Thank you!','Yes, it is.','Nice to meet you.']}];
+      const c=pick(P);
+      return {type:'mc', q:'<span class="mat">💬 '+en(c.di)+'</span>横线处应填：',
+        opts:[en(c.qz),en(c.w[0]),en(c.w[1]),en(c.w[2])], a:0,
+        ex:'补全对话看"上下文搭配"：这里地道的说法是「'+c.qz+'」。'};}}
+   ],
+   s3:[
+    {gid:'g3a',d:2,make(){ const w=pick(W1);
+      return {type:'in', q:en(w.s)+'（'+w.cn+'，把单词拼出来）', a:w.en,
+        ex:'<b>'+w.en+'</b> '+w.cn+'。整句：'+en(w.s.replace('______','<b>'+w.en+'</b>'))+' 拼错的词会进错题本反复听写。'};}},
+    {gid:'g3b',d:2,make(){ const w=pick(W1);
+      const canTTS = (typeof TTS!=='undefined') && TTS.ok;
+      if(!canTTS) return {type:'in', q:'默写：「'+w.cn+'」的英文是？（提示首字母 '+w.en[0]+'）', a:w.en,
+        ex:'<b>'+w.en+'</b> '+w.cn+'。'};
+      return {type:'in', q:'🎧 听音拼写：点按钮听单词，把听到的词拼出来。<br><button class="abtn" type="button" onclick="TTS.speak(\''+w.en+'\')">🔊 播放 / 再听一遍</button><br><span style="font-size:13px;color:var(--ink-dim)">提示：中文意思是「'+w.cn+'」</span>', a:w.en,
+        ex:'这个词是 <b>'+w.en+'</b>（'+w.cn+'）。听写是期中听力和拼写的双重训练。'};}}
+   ]
+  }
+};
+</script>
+<script>
+/* ============================================================
+   自适应引擎（Elo/IRT-lite + 遗忘衰减 + 错题回炉）+ TTS 朗读
+   ============================================================ */
+const DIFF_B = {1:-1.2, 2:0, 3:1.1};
+const UNLOCK_PCT = 60, MASTER_PCT = 82;
+const MAX_Q = 12, MIN_Q = 6;
+
+const store = (()=>{ let mem={},ok=false;
+  try{localStorage.setItem('__t','1');localStorage.removeItem('__t');ok=true;}catch(e){}
+  return {get(k){try{return ok?JSON.parse(localStorage.getItem(k)):(mem[k]??null);}catch(e){return mem[k]??null;}},
+          set(k,v){mem[k]=v;if(ok){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}}};})();
+
+const KEY = 'trek_'+SUBJECT.id;
+let S = Object.assign({diagDone:false,theta:{},attempts:{},doneRight:{},wrongBook:[],totalAnswered:0,totalCorrect:0,
+  lastPractice:{},decayedTo:{},skillStat:{},story:{},blind:{},comp:{},writing:{},extra:{},manual:{},lesson:{}}, store.get(KEY)||{});
+SUBJECT.skills.forEach(s=>{ if(!(s.key in S.theta)){S.theta[s.key]=-1.0; S.attempts[s.key]=0;}
+  if(!(s.key in S.skillStat)) S.skillStat[s.key]={t:0,c:0,sec:0}; });
+function save(){ store.set(KEY,S); }
+
+const DAY = 86400000;
+function applyDecay(){
+  const now=Date.now(); let changed=false;
+  SUBJECT.skills.forEach(s=>{ const k=s.key;
+    if(!(S.attempts[k]>0) || !S.lastPractice[k]) return;
+    const days=(now-S.lastPractice[k])/DAY;
+    const target=Math.min(1.2, 0.06*Math.max(0, days-2));
+    const applied=S.decayedTo[k]||0;
+    if(target>applied+1e-6){ S.theta[k]=Math.max(-2, S.theta[k]-(target-applied)); S.decayedTo[k]=target; changed=true; }
+  });
+  if(changed) save();
+}
+const mPct = th => Math.max(0,Math.min(100,Math.round((th+2)/4.5*100)));
+const pWin = (th,b) => 1/(1+Math.exp(-(th-b)));
+function updateTheta(sk, b, right){
+  const K = Math.max(0.3, 0.85 - 0.05*(S.attempts[sk]||0));
+  S.theta[sk] += K*((right?1:0) - pWin(S.theta[sk], b));
+  S.theta[sk] = Math.max(-2, Math.min(2.5, S.theta[sk]));
+  S.attempts[sk] = (S.attempts[sk]||0)+1;
+  S.lastPractice[sk] = Date.now(); S.decayedTo[sk] = 0;
+}
+function wrapStatic(it, idx){ return {key:'i'+idx, skill:it.skill, b:DIFF_B[it.d], d:it.d, type:it.type, q:it.q, opts:it.opts, words:it.words, a:it.a, ex:it.ex}; }
+function makeGenerated(sk, gen){ const t=gen.make(); return Object.assign({key:'g:'+gen.gid+':'+(t.a||t.q), skill:sk, b:DIFF_B[gen.d], d:gen.d, gen:true}, t); }
+function pickQuestion(sk, session){
+  const target = Math.max(-1.3, Math.min(1.3, S.theta[sk]+0.35));
+  const cands = [];
+  SUBJECT.items.forEach((it,idx)=>{
+    if(it.skill!==sk) return;
+    const w = wrapStatic(it,idx);
+    if(session.used.has(w.key)) return;
+    let cost = Math.abs(w.b-target) + (S.doneRight[w.key]?0.55:0) + Math.random()*0.25;
+    cands.push({w, cost:cost-0.15});
+  });
+  (SUBJECT.gens[sk]||[]).forEach(gen=>{
+    if(session.lastGid===gen.gid) return;
+    const w = makeGenerated(sk,gen);
+    if(session.used.has(w.key)) return;
+    cands.push({w, cost:Math.abs(w.b-target)+Math.random()*0.25});
+  });
+  if(!cands.length) return makeGenerated(sk, pick(SUBJECT.gens[sk]));
+  cands.sort((a,b)=>a.cost-b.cost);
+  return pick(cands.slice(0, Math.min(3,cands.length))).w;
+}
+function dueReview(session){
+  const e = S.wrongBook.filter(x=>!session.usedReview.has(x.key)).sort((a,b)=>a.at-b.at)[0];
+  if(!e) return null;
+  session.usedReview.add(e.key);
+  return {key:e.key, skill:e.skill, b:0, d:e.d||2, type:e.type, q:e.q, opts:e.opts, words:e.words, a:e.a, ex:e.ex, review:true};
+}
+
+/* =================== TTS 朗读模块 =================== */
+const TTS={ok:false,voice:null,slow:false,list:[],
+ init(){ if(!('speechSynthesis' in window)) return;
+   TTS.ok=true;
+   const load=()=>{ const vs=speechSynthesis.getVoices();
+     TTS.list=vs.filter(v=>/^en/i.test(v.lang));
+     const pref=S&&S.voicePref;
+     TTS.voice = (pref&&TTS.list.find(v=>v.name===pref)) ||
+       TTS.list.find(v=>/^en[-_](GB|AU)/i.test(v.lang)) || TTS.list.find(v=>/^en[-_]US/i.test(v.lang)) || TTS.list[0] || null;
+     const sel=document.getElementById('ab-voice');
+     if(sel&&TTS.list.length){
+       sel.style.display='';
+       sel.innerHTML=TTS.list.map(v=>'<option value="'+v.name.replace(/"/g,'')+'"'+(TTS.voice&&v.name===TTS.voice.name?' selected':'')+'>🗣 '
+         +v.name.replace(/Microsoft |Google |Apple /g,'')+' ('+v.lang+')</option>').join('');
+       sel.onchange=()=>{ const v=TTS.list.find(x=>x.name.replace(/"/g,'')===sel.value);
+         if(v){TTS.voice=v; S.voicePref=v.name; save(); TTS.stop(); TTS.speak('Hello! I am your new reading voice.');} };
+     } };
+   load(); speechSynthesis.onvoiceschanged=load; },
+ speak(text,onend){ if(!TTS.ok){if(onend)onend();return;}
+   const u=new SpeechSynthesisUtterance(text);
+   if(TTS.voice)u.voice=TTS.voice; u.lang=TTS.voice?TTS.voice.lang:'en-US';
+   u.rate=TTS.slow?0.72:0.92; u.onend=onend||null; u.onerror=onend||null;
+   speechSynthesis.speak(u); },
+ stop(){ if(TTS.ok) speechSynthesis.cancel(); }};
+TTS.init();
+
+/* =================== 界面基架 =================== */
+const $ = id => document.getElementById(id);
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); window.scrollTo(0,0); TTS.stop(); }
+
+/* =================== 故事阅读器 =================== */
+let curEp=0, tapMode=false, playing=false;
+const plain = s => s.replace(/\{([^|}]+)\|[^}]*\}/g,'$1');
+const rich = s => s.replace(/\{([^|}]+)\|([^}]*)\}/g,'<span class="gw">$1<i>$2</i></span>');
+function epKey(i){return 'e'+i;}
+function openStory(ep){
+  curEp=Math.max(0,Math.min(STORY.length-1,ep));
+  S.story[epKey(curEp)]=true; save();
+  renderStory(); show('scr-story');
+}
+function renderStory(){
+  playing=false; tapMode=false; $('ab-tap').classList.remove('on'); $('ab-tap').textContent='👆 点读：关';
+  const tabs=$('eptabs'); tabs.innerHTML='';
+  STORY.forEach((e,i)=>{ const b=document.createElement('button');
+    b.className='eptab'+(i===curEp?' cur':'');
+    b.innerHTML=e.t+(S.comp[epKey(i)]!=null?'<span class="rd">✓ 已完成</span>':(S.story[epKey(i)]?'<span class="rd">· 阅读中</span>':''));
+    b.onclick=()=>openStory(i); tabs.appendChild(b); });
+  const e=STORY[curEp], k=epKey(curEp);
+  const blindDone = !!S.blind[k];
+  let html='';
+  if(!blindDone){
+    html+='<div class="blindcard"><h4>🎧 先听后读挑战（推荐）</h4>'+
+      '<p>先别看原文！点「开始盲听」听 1–2 遍，凭耳朵答下面 2 道大意题，然后原文自动解锁。听不懂也没关系，抓关键词就行。</p>'+
+      '<div class="bb"><button style="background:var(--air-blue);color:#fff" id="bb-play">🎧 开始盲听</button>'+
+      '<button style="background:#EDE5D4;color:var(--ink-dim)" id="bb-skip">直接阅读</button></div>'+
+      '<div id="gist-quiz" style="display:none"></div></div>';
+  }
+  html+='<div class="postcard airmail'+(blindDone?'':' blind')+'" id="pcard"><div class="stamp">'+e.stamp+'</div>'+
+    '<h3>'+e.et+'</h3><div class="cn-sub">'+e.t+' · 约 '+e.paras.flat().map(plain).join(' ').split(/\s+/).length+' 词'+(e.sk?' · 配套关卡：'+SUBJECT.skills.find(s=>s.key===e.sk).name:'')+'</div>'+
+    '<div class="body" id="st-text">';
+  e.paras.forEach((para,pi)=>{
+    html+='<p>'+para.map((s,si)=>'<span class="sent" data-p="'+pi+'" data-s="'+si+'">'+rich(s)+'</span>').join(' ')+'</p>';
+  });
+  html+='</div><div class="wordbox">🔑 本节钥匙词与句型<br>'+e.words+'</div></div>';
+  /* 读懂了吗 */
+  html+='<div class="miniquiz" id="compquiz"><h4>✅ 读懂了吗（每题只能选一次）</h4>'+
+    e.comp.map((c,ci)=>'<div class="mq" data-ci="'+ci+'"><div class="mqq">'+(ci+1)+'. '+en(c.q)+'</div><div class="mqopts">'+
+      shuffle(c.o.map((o,oi)=>({o,oi}))).map(x=>'<button class="mqo" data-oi="'+x.oi+'">'+x.o+'</button>').join('')+
+      '</div><div class="feedback" style="margin-top:8px"><div class="fh"></div><div class="fbb"></div></div></div>').join('')+'</div>';
+  /* Think & Talk */
+  html+='<div class="talkbox"><h4>💬 Think & Talk（和爸妈聊一聊，中英都行）</h4>'+e.talk.map((t,i)=>(i+1)+'. '+t).join('<br>')+'</div>';
+  /* 第3节：续写 */
+  if(curEp===2){
+    const saved=S.writing.w1||'';
+    html+='<div class="writecard"><h4>✍️ 本周写作 · Tom 的寻人档案</h4>'+
+      '<p>替 Tom 写下这份发往悉尼的 profile（5–6 句）。逐条回答 Emma 的五个问题，最后一句说明 Why：<br>'+
+      '<span class="en">My full name is ... / I am ... years old. / I am in Grade ... / I am from ... / Mary is ... because ...</span></p>'+
+      '<textarea id="write-box" placeholder="Hello, friends in Sydney! My full name is ...">'+saved.replace(/</g,'&lt;')+'</textarea>'+
+      '<div class="checklist">✅ 自查：① 每句都有 be 动词吗（中式英语最易漏）？　② 人名、句首大写了吗？　③ 至少用一个否定句（如 We are not sure...）？</div>'+
+      '<button class="savebtn" id="btn-write-save">保存（周末贴给 AI 或家长批改）</button></div>';
+  }
+  if(e.sk){
+    html+='<button class="nextbtn show" style="margin-top:14px" onclick="startSkill(\''+e.sk+'\')">去闯配套关卡 →</button>';
+  }
+  $('st-body').innerHTML=html;
+  bindStory(e,k,blindDone);
+}
+function bindStory(e,k,blindDone){
+  /* 注释词 */
+  $('st-body').querySelectorAll('.gw').forEach(w=>{ w.onclick=(ev)=>{ if(tapMode)return;
+    ev.stopPropagation();
+    const on=w.classList.contains('on');
+    $('st-body').querySelectorAll('.gw').forEach(x=>x.classList.remove('on'));
+    if(!on) w.classList.add('on'); }; });
+  /* 点读 */
+  $('st-body').querySelectorAll('.sent').forEach(sp=>{ sp.onclick=()=>{ if(!tapMode)return;
+    TTS.stop();
+    $('st-body').querySelectorAll('.sent').forEach(x=>x.classList.remove('playing'));
+    sp.classList.add('playing');
+    const txt=plain(e.paras[+sp.dataset.p][+sp.dataset.s]);
+    TTS.speak(txt,()=>sp.classList.remove('playing')); }; });
+  /* 盲听 */
+  const bp=$('bb-play'), bs=$('bb-skip');
+  if(bp){ bp.onclick=()=>{ playAll(e); showGist(e,k); };
+    bs.onclick=()=>{ S.blind[k]='skip'; save(); renderStory(); }; }
+  /* 读懂了吗 */
+  $('st-body').querySelectorAll('.mq').forEach(mq=>{
+    const ci=+mq.dataset.ci, c=e.comp[ci];
+    mq.querySelectorAll('.mqo').forEach(b=>{ b.onclick=()=>{
+      if(mq.dataset.done)return; mq.dataset.done='1';
+      const right=+b.dataset.oi===c.a;
+      mq.querySelectorAll('.mqo').forEach(x=>{ x.disabled=true;
+        if(+x.dataset.oi===c.a)x.classList.add('correct'); else if(x===b&&!right)x.classList.add('wrong'); });
+      const fb=mq.querySelector('.feedback'); fb.className='feedback '+(right?'ok':'no');
+      fb.querySelector('.fh').textContent=right?'✓ 正确':'✗ 再想想';
+      fb.querySelector('.fbb').innerHTML=c.ex;
+      S.comp[k]=(S.comp[k]||0)+(right?1:0);
+      const all=[...$('st-body').querySelectorAll('.mq')].every(x=>x.dataset.done);
+      if(all){ save(); renderMapStatsOnly(); }
+      save();
+    };});
+  });
+  const sv=$('btn-write-save'); if(sv) sv.onclick=()=>{ S.writing.w1=$('write-box').value; save(); sv.textContent='✓ 已保存'; };
+}
+function playAll(e){
+  TTS.stop(); playing=true;
+  const sents=[...$('st-body').querySelectorAll('.sent')];
+  let i=0;
+  const step=()=>{ if(!playing||i>=sents.length){sents.forEach(x=>x.classList.remove('playing'));playing=false;$('ab-play').textContent='▶️ 整节朗读';return;}
+    sents.forEach(x=>x.classList.remove('playing'));
+    const sp=sents[i]; sp.classList.add('playing');
+    if(!$('pcard').classList.contains('blind')) sp.scrollIntoView({block:'center',behavior:'smooth'});
+    const txt=plain(e.paras[+sp.dataset.p][+sp.dataset.s]);
+    i++; TTS.speak(txt,step); };
+  $('ab-play').textContent='🔊 朗读中…';
+  step();
+}
+function showGist(e,k){
+  const g=$('gist-quiz'); if(!g||g.dataset.on)return; g.dataset.on='1';
+  g.style.display='block';
+  g.innerHTML='<div style="margin-top:12px;font-size:13px;font-weight:800">听完后答题（答完自动解锁原文）：</div>'+
+    e.gist.map((c,ci)=>'<div class="mq" data-ci="'+ci+'"><div class="mqq">'+(ci+1)+'. '+en(c.q)+'</div><div class="mqopts">'+
+      shuffle(c.o.map((o,oi)=>({o,oi}))).map(x=>'<button class="mqo" data-oi="'+x.oi+'">'+x.o+'</button>').join('')+'</div></div>').join('');
+  let done=0;
+  g.querySelectorAll('.mq').forEach(mq=>{
+    const ci=+mq.dataset.ci, c=e.gist[ci];
+    mq.querySelectorAll('.mqo').forEach(b=>{ b.onclick=()=>{
+      if(mq.dataset.done)return; mq.dataset.done='1'; done++;
+      mq.querySelectorAll('.mqo').forEach(x=>{ x.disabled=true;
+        if(+x.dataset.oi===c.a)x.classList.add('correct'); else if(x===b&&+b.dataset.oi!==c.a)x.classList.add('wrong'); });
+      if(done>=e.gist.length){ TTS.stop(); playing=false; S.blind[k]='done'; save();
+        setTimeout(()=>renderStory(),700); }
+    };});
+  });
+}
+$('ab-play').onclick=()=>{ if(playing){playing=false;TTS.stop();$('ab-play').textContent='▶️ 整节朗读';} else playAll(STORY[curEp]); };
+$('ab-stop').onclick=()=>{ playing=false; TTS.stop(); $('ab-play').textContent='▶️ 整节朗读';
+  document.querySelectorAll('.sent').forEach(x=>x.classList.remove('playing')); };
+$('ab-rate').onclick=()=>{ TTS.slow=!TTS.slow; $('ab-rate').textContent='🐢 慢速：'+(TTS.slow?'开':'关'); $('ab-rate').classList.toggle('on',TTS.slow); };
+$('ab-tap').onclick=()=>{ tapMode=!tapMode; $('ab-tap').textContent='👆 点读：'+(tapMode?'开':'关'); $('ab-tap').classList.toggle('on',tapMode);
+  document.getElementById('st-text').parentElement.classList.toggle('readmode',tapMode); };
+$('btn-story').onclick=()=>openStory(firstUnread());
+$('btn-st-back').onclick=()=>{renderMap();show('scr-map');};
+
+/* =================== 单词本 =================== */
+let vbTest=false, vbPlaying=false;
+function renderVocab(){
+  let html='';
+  W1.forEach((w,i)=>{
+    const ex=w.s.replace('______','<b style="color:var(--air-blue)">'+w.en+'</b>');
+    html+='<div class="wb-item vb-card" data-i="'+i+'" style="cursor:pointer">'+
+      '<div style="display:flex;align-items:center;gap:12px">'+
+      '<span class="en" style="font-size:20px;font-weight:700;flex:1">'+w.en+'</span>'+
+      '<button class="abtn vb-say" data-w="'+w.en+'" type="button">🔊</button></div>'+
+      '<div class="vb-meaning" style="margin-top:6px;font-size:14px;line-height:1.8;'+(vbTest?'display:none;':'')+'">'+
+      w.cn+'<br><span class="en" style="color:var(--ink-dim)">'+ex+'</span></div>'+
+      (vbTest?'<div class="vb-peek" style="margin-top:6px;font-size:12px;color:var(--ink-dim)">👆 先说出中文意思，再点卡片对答案</div>':'')+
+      '</div>';
+  });
+  $('vb-body').innerHTML=html;
+  $('vb-body').querySelectorAll('.vb-say').forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation();
+    TTS.stop(); TTS.speak(b.dataset.w); }; });
+  $('vb-body').querySelectorAll('.vb-card').forEach(c=>{ c.onclick=()=>{ if(!vbTest)return;
+    const m=c.querySelector('.vb-meaning'), p=c.querySelector('.vb-peek');
+    const hidden=m.style.display==='none';
+    m.style.display=hidden?'':'none'; if(p)p.style.display=hidden?'none':''; }; });
+}
+function vbPlayAll(){
+  TTS.stop(); vbPlaying=true;
+  let i=0;
+  const cards=[...$('vb-body').querySelectorAll('.vb-card')];
+  const step=()=>{ if(!vbPlaying||i>=W1.length){vbPlaying=false;$('vb-playall').textContent='▶️ 全部连读';cards.forEach(x=>x.style.borderColor='');return;}
+    cards.forEach(x=>x.style.borderColor='');
+    if(cards[i]){cards[i].style.borderColor='var(--air-red)';if(cards[i].scrollIntoView)cards[i].scrollIntoView({block:'center',behavior:'smooth'});}
+    const w=W1[i]; i++;
+    TTS.speak(w.en+'. '+w.en+'.',()=>setTimeout(step,350)); };
+  $('vb-playall').textContent='🔊 连读中…'; step();
+}
+$('btn-vocab').onclick=()=>{renderVocab();show('scr-vocab');};
+$('btn-vb-back').onclick=()=>{renderMap();show('scr-map');};
+$('vb-test').onclick=()=>{ vbTest=!vbTest; $('vb-test').textContent='🙈 自测模式：'+(vbTest?'开':'关');
+  $('vb-test').classList.toggle('on',vbTest); renderVocab(); };
+$('vb-playall').onclick=()=>{ if(vbPlaying){vbPlaying=false;TTS.stop();$('vb-playall').textContent='▶️ 全部连读';} else vbPlayAll(); };
+$('vb-stopall').onclick=()=>{ vbPlaying=false; TTS.stop(); $('vb-playall').textContent='▶️ 全部连读'; };
+
+/* =================== 泛读番外 =================== */
+let curEx=0, exPlaying=false;
+function openExtra(i){ curEx=Math.max(0,Math.min(EXTRA.length-1,i)); renderExtra(); show('scr-extra'); }
+function renderExtra(){
+  exPlaying=false;
+  const tabs=$('extabs'); tabs.innerHTML='';
+  EXTRA.forEach((e,i)=>{ const b=document.createElement('button');
+    b.className='eptab'+(i===curEx?' cur':'');
+    b.innerHTML='番外 '+(i+1)+(S.extra[e.id]!=null?'<span class="rd">✓ '+S.extra[e.id]+'/'+e.qs.length+'</span>':'');
+    b.onclick=()=>openExtra(i); tabs.appendChild(b); });
+  const e=EXTRA[curEx];
+  const wc=e.paras.flat().map(plain).join(' ').split(/\s+/).length;
+  let html='<div class="postcard airmail"><div class="stamp">'+e.stamp+'</div>'+
+    '<h3>'+e.et+'</h3><div class="cn-sub">'+e.tag+' · 约 '+wc+' 词</div><div class="body" id="ex-text">';
+  e.paras.forEach(para=>{ html+='<p>'+para.map(s=>'<span class="sent">'+rich(s)+'</span>').join(' ')+'</p>'; });
+  html+='</div></div>';
+  const done=S.extra[e.id]!=null;
+  html+='<div class="miniquiz"><h4>📝 考试风格题组（一遍读完直接做，每题只能选一次）</h4>'+
+    e.qs.map((c,ci)=>'<div class="mq" data-ci="'+ci+'"><div class="mqq">'+(ci+1)+'. '+en(c.q)+'</div><div class="mqopts">'+
+      shuffle(c.o.map((o,oi)=>({o,oi}))).map(x=>'<button class="mqo" data-oi="'+x.oi+'"'+(done?' disabled':'')+'>'+x.o+'</button>').join('')+
+      '</div><div class="feedback" style="margin-top:8px"><div class="fh"></div><div class="fbb"></div></div></div>').join('')+
+    (done?'<div class="advice" style="margin-top:12px">✓ 本篇已完成，得分 '+S.extra[e.id]+'/'+e.qs.length+'。想重做请先在报告页重置。</div>':'')+'</div>';
+  $('ex-body').innerHTML=html;
+  if(!done){
+    let answered=0, score=0;
+    $('ex-body').querySelectorAll('.mq').forEach(mq=>{
+      const ci=+mq.dataset.ci, c=e.qs[ci];
+      mq.querySelectorAll('.mqo').forEach(b=>{ b.onclick=()=>{
+        if(mq.dataset.done)return; mq.dataset.done='1'; answered++;
+        const right=+b.dataset.oi===c.a; if(right)score++;
+        mq.querySelectorAll('.mqo').forEach(x=>{ x.disabled=true;
+          if(+x.dataset.oi===c.a)x.classList.add('correct'); else if(x===b&&!right)x.classList.add('wrong'); });
+        const fb=mq.querySelector('.feedback'); fb.className='feedback '+(right?'ok':'no');
+        fb.querySelector('.fh').textContent=right?'✓ 正确':'✗ 再想想';
+        fb.querySelector('.fbb').innerHTML=c.ex;
+        if(answered>=e.qs.length){ S.extra[e.id]=score; save(); renderMapStatsOnly(); }
+      };});
+    });
+  }
+  /* 注释词 */
+  $('ex-body').querySelectorAll('.gw').forEach(w=>{ w.onclick=ev=>{ ev.stopPropagation();
+    const on=w.classList.contains('on');
+    $('ex-body').querySelectorAll('.gw').forEach(x=>x.classList.remove('on'));
+    if(!on)w.classList.add('on'); }; });
+}
+function playExtra(){
+  TTS.stop(); exPlaying=true;
+  const e=EXTRA[curEx], sents=[...$('ex-body').querySelectorAll('.sent')];
+  const flat=e.paras.flat();
+  let i=0;
+  const step=()=>{ if(!exPlaying||i>=sents.length){sents.forEach(x=>x.classList.remove('playing'));exPlaying=false;$('ex-play').textContent='▶️ 朗读本篇';return;}
+    sents.forEach(x=>x.classList.remove('playing'));
+    sents[i].classList.add('playing');
+    const txt=plain(flat[i]); i++;
+    TTS.speak(txt,step); };
+  $('ex-play').textContent='🔊 朗读中…'; step();
+}
+$('ex-play').onclick=()=>{ if(exPlaying){exPlaying=false;TTS.stop();$('ex-play').textContent='▶️ 朗读本篇';} else playExtra(); };
+$('ex-stop').onclick=()=>{ exPlaying=false; TTS.stop(); $('ex-play').textContent='▶️ 朗读本篇';
+  document.querySelectorAll('#ex-body .sent').forEach(x=>x.classList.remove('playing')); };
+$('btn-extra').onclick=()=>openExtra(S.extra.x0==null?0:1);
+$('btn-ex-back').onclick=()=>{renderMap();show('scr-map');};
+
+/* =================== 语法讲堂 =================== */
+let lessonTarget=null;
+function renderLesson(sk){
+  lessonTarget=sk;
+  const L=LESSON[sk];
+  $('ls-title').textContent=L.title;
+  let html='<p class="wb-sub">'+L.sub+'</p>'+
+    '<div class="postcard airmail"><h3 style="font-family:inherit;font-size:16px">👀 第一步 · 观察</h3>'+
+    '<div class="cn-sub">'+L.obsHint+'</div><div class="body" style="font-size:16px;line-height:1.9;margin-top:10px">'+
+    L.obs.map(o=>'<p style="margin:0 0 10px">'+o+'</p>').join('')+'</div></div>'+
+    '<div class="wordbox" style="margin-top:14px"><b style="font-family:inherit">🧭 第二步 · 规则卡</b><br>'+L.rules+'</div>'+
+    '<div class="miniquiz"><h4>✅ 第三步 · 过关检验（答对才算学完）</h4>'+
+    L.checks.map((c,ci)=>'<div class="mq" data-ci="'+ci+'"><div class="mqq">'+(ci+1)+'. '+c.q+'</div><div class="mqopts">'+
+      shuffle(c.o.map((o,oi)=>({o,oi}))).map(x=>'<button class="mqo" data-oi="'+x.oi+'">'+x.o+'</button>').join('')+
+      '</div><div class="feedback" style="margin-top:8px"><div class="fh"></div><div class="fbb"></div></div></div>').join('')+'</div>'+
+    '<button class="nextbtn" id="ls-go" style="margin-top:14px">✅ 学完了，开始闯关 →</button>';
+  $('ls-body').innerHTML=html;
+  let okCount=0;
+  $('ls-body').querySelectorAll('.mq').forEach(mq=>{
+    const ci=+mq.dataset.ci, c=LESSON[sk].checks[ci];
+    mq.querySelectorAll('.mqo').forEach(b=>{ b.onclick=()=>{
+      if(mq.dataset.done)return; mq.dataset.done='1';
+      const right=+b.dataset.oi===c.a; if(right)okCount++;
+      mq.querySelectorAll('.mqo').forEach(x=>{ x.disabled=true;
+        if(+x.dataset.oi===c.a)x.classList.add('correct'); else if(x===b&&!right)x.classList.add('wrong'); });
+      const fb=mq.querySelector('.feedback'); fb.className='feedback '+(right?'ok':'no');
+      fb.querySelector('.fh').textContent=right?'✓ 正确':'✗ 看讲解';
+      fb.querySelector('.fbb').innerHTML=c.ex;
+      const allDone=[...$('ls-body').querySelectorAll('.mq')].every(x=>x.dataset.done);
+      if(allDone)$('ls-go').classList.add('show');
+    };});
+  });
+  $('ls-go').onclick=()=>{ S.lesson[sk]=true; save(); beginQuiz(sk); };
+}
+$('btn-ls-back').onclick=()=>{renderMap();show('scr-map');};
+
+/* =================== 本周计划 =================== */
+const PLAN=[
+ {d:'周一',items:[
+  {t:'🎧📖 精读第 1 节 The Old Box（盲听→精读→点读）',auto:()=>S.comp.e0!=null},
+  {t:'🗣 影子跟读第 1 节 3 分钟（开点读，逐句模仿）',key:'m_sh1'},
+  {t:'🃏 Anki 8 分钟',key:'m_ak1'}]},
+ {d:'周二',items:[
+  {t:'📘 语法讲堂 1 + 第 1 站「语言基石」闯到 60%',auto:()=>mPct(S.theta.s1)>=UNLOCK_PCT},
+  {t:'📄 纸质：中译英 5 句（手写）',key:'m_tr1'},
+  {t:'🃏 Anki 8 分钟',key:'m_ak2'}]},
+ {d:'周三',items:[
+  {t:'🎧📖 精读第 2 节 A New Classmate',auto:()=>S.comp.e1!=null},
+  {t:'📚 泛读番外 1《Hello Around the World》',auto:()=>S.extra.x0!=null},
+  {t:'🃏 Anki 8 分钟',key:'m_ak3'}]},
+ {d:'周四',items:[
+  {t:'📘 语法讲堂 2 + 第 2 站「实战应用」闯到 60%',auto:()=>mPct(S.theta.s2)>=UNLOCK_PCT},
+  {t:'🗣 影子跟读第 2 节 3 分钟',key:'m_sh2'},
+  {t:'🃏 Anki 8 分钟',key:'m_ak4'}]},
+ {d:'周五',items:[
+  {t:'🎧📖 精读第 3 节 The Yellow Letter',auto:()=>S.comp.e2!=null},
+  {t:'📘 讲堂 3 + 第 3 站「单词关」闯到 60%',auto:()=>mPct(S.theta.s3)>=UNLOCK_PCT},
+  {t:'📚 泛读番外 2《寻人帖》',auto:()=>S.extra.x1!=null}]},
+ {d:'周六 · 约 45 分钟',items:[
+  {t:'📄 纸质：单词默写表（念中文写英文）',key:'m_dict'},
+  {t:'🎙 口头复述本章故事 + 录音回听',key:'m_retell'},
+  {t:'♻️ 错题回炉清零',auto:()=>S.totalAnswered>0&&S.wrongBook.length===0}]},
+ {d:'周日 · 约 45 分钟',items:[
+  {t:'✍️ 写作：Tom 的寻人档案（写完贴给 AI 批改）',auto:()=>!!S.writing.w1},
+  {t:'🗨 Claude 语音模式：扮演 Emma 用英语聊 5 分钟',key:'m_talk'},
+  {t:'🃏 Anki 复习堆清零',key:'m_ak7'}]}
+];
+function planItemDone(it){ return it.auto?!!it.auto():!!S.manual[it.key]; }
+function renderPlan(){
+  const total=PLAN.reduce((n,d)=>n+d.items.length,0);
+  const done=PLAN.reduce((n,d)=>n+d.items.filter(planItemDone).length,0);
+  $('pl-prog').innerHTML='<div class="mline"><div class="mbar"><i style="width:'+(100*done/total)+'%"></i></div>'+
+    '<span class="mpct num">'+done+'/'+total+'</span></div>';
+  let html='';
+  PLAN.forEach(day=>{
+    html+='<div class="wb-item"><div class="wq">'+day.d+'</div>';
+    day.items.forEach(it=>{
+      const ok=planItemDone(it);
+      html+='<div class="plrow" data-key="'+(it.key||'')+'" style="display:flex;align-items:flex-start;gap:8px;margin-top:9px;'+(it.key?'cursor:pointer;':'')+'">'+
+        '<span style="font-size:16px;flex:none">'+(ok?'✅':(it.key?'⬜':'⭕'))+'</span>'+
+        '<span style="font-size:13.5px;line-height:1.6;'+(ok?'color:var(--ink-dim);text-decoration:line-through;':'')+'">'+it.t+
+        (it.auto?' <span style="font-size:10px;color:var(--air-blue)">自动</span>':'')+'</span></div>';
+    });
+    html+='</div>';
+  });
+  html+='<div class="advice">💡 顺序建议：先输入（听读）→ 再练习（闯关）→ 最后记忆（Anki）。哪天时间不够，优先保「精读/泛读 + Anki」，闯关可以顺延。</div>';
+  $('pl-body').innerHTML=html;
+  $('pl-body').querySelectorAll('.plrow').forEach(r=>{ const k=r.dataset.key; if(!k)return;
+    r.onclick=()=>{ S.manual[k]=!S.manual[k]; save(); renderPlan(); }; });
+}
+$('btn-plan').onclick=()=>{renderPlan();show('scr-plan');};
+$('btn-pl-back').onclick=()=>{renderMap();show('scr-map');};
+function firstUnread(){ const i=STORY.findIndex((_,i)=>S.comp[epKey(i)]==null); return i<0?0:i; }
+if(!TTS.ok){ document.addEventListener('DOMContentLoaded',()=>{ $('ttsnote').textContent='⚠️ 当前浏览器不支持语音朗读，请换用 Safari 或 Chrome 打开本文件。'; }); }
+
+/* =================== 地图 =================== */
+function skillUnlocked(i){
+  if(i===0) return S.diagDone;
+  return mPct(S.theta[SUBJECT.skills[i-1].key]) >= UNLOCK_PCT;
+}
+function renderMapStatsOnly(){
+  const mastered = SUBJECT.skills.filter(s=>mPct(S.theta[s.key])>=MASTER_PCT).length;
+  $('st-mastered').innerHTML = mastered+'<span class="u">/'+SUBJECT.skills.length+'</span>';
+  $('st-answered').textContent = S.totalAnswered;
+  $('st-acc').textContent = S.totalAnswered?Math.round(100*S.totalCorrect/S.totalAnswered)+'%':'—';
+}
+function renderMap(){
+  renderMapStatsOnly();
+  const pend=S.wrongBook.length; $('wb-badge').textContent=pend; $('wb-badge').style.display=pend?'':'none';
+  const rec=recommend(); const tb=$('btn-today');
+  tb.textContent=rec.label; tb.onclick=rec.act||null; tb.style.opacity=rec.act?1:.6;
+
+  const trail=$('trail'); trail.innerHTML='';
+  const camp=document.createElement('button');
+  camp.className='node'+(S.diagDone?' done':' next');
+  camp.innerHTML='<div class="peg">🧳</div><div class="info"><div class="t">线索起点 · 行前体检</div>'+
+    '<div class="alt">10 道小学核心题 · 摸底后开启寻踪之旅</div>'+
+    (S.diagDone?'<span class="tag">✓ 已完成体检</span>':'<span class="tag" style="color:var(--air-red);border-color:var(--air-red)">从这里开始</span>')+'</div>';
+  camp.onclick=()=>startDiag();
+  trail.appendChild(camp);
+
+  let nextMarked=false;
+  SUBJECT.skills.forEach((sk,i)=>{
+    const pct=mPct(S.theta[sk.key]), unlocked=skillUnlocked(i), mastered=pct>=MASTER_PCT;
+    const node=document.createElement('button');
+    node.className='node'+(mastered?' done mastered':'')+(!unlocked?' locked':'');
+    if(unlocked&&!mastered&&!nextMarked){node.classList.add('next');nextMarked=true;}
+    let body='<div class="t">'+sk.name+'</div><div class="alt">'+sk.alt+'</div>';
+    if(!unlocked) body+='<span class="tag" style="color:var(--ink-dim);border-color:var(--card-edge)">🔒 上一站掌握度达 '+UNLOCK_PCT+'% 解锁</span>';
+    else{
+      body+='<div class="mline'+(mastered?' mastered':'')+'"><div class="mbar"><i style="width:'+pct+'%"></i></div><span class="mpct num">'+pct+'%</span></div>';
+      if((S.decayedTo[sk.key]||0)>0.15) body+='<span class="tag" style="color:var(--coral);border-color:var(--coral)">🔁 记忆松动，建议复习</span>';
+      else if(mastered) body+='<span class="mbadge">🔎 已掌握</span>';
+      else if(S.attempts[sk.key]>0) body+='<span class="tag">继续前进（自适应出题）</span>';
+      else body+='<span class="tag">可挑战</span>';
+    }
+    node.innerHTML='<div class="peg">'+sk.icon+'</div><div class="info">'+body+'</div>';
+    if(unlocked) node.onclick=()=>startSkill(sk.key);
+    trail.appendChild(node);
+  });
+  SUBJECT.soon.forEach(sk=>{
+    const node=document.createElement('button'); node.className='node locked';
+    node.innerHTML='<div class="peg">🔒</div><div class="info"><div class="t">'+sk.name+'</div><div class="alt">'+sk.alt+'</div><span class="tag">即将开放</span></div>';
+    trail.appendChild(node);
+  });
+}
+
+/* =================== 今日推荐 =================== */
+function recommend(){
+  if(!S.diagDone) return {label:'🎯 今日推荐：先完成「行前体检」', act:startDiag};
+  if(S.comp['e0']==null) return {label:'🎯 今日推荐：读故事第 1 节 The Old Box（先盲听）', act:()=>openStory(0)};
+  if(mPct(S.theta.s1)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 1 + 第 1 站「语言基石」', act:()=>startSkill('s1')};
+  if(S.comp['e1']==null) return {label:'🎯 今日推荐：读故事第 2 节 A New Classmate', act:()=>openStory(1)};
+  if(S.extra.x0==null) return {label:'📚 今日推荐：泛读番外 1《Hello Around the World》', act:()=>openExtra(0)};
+  if(mPct(S.theta.s2)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 2 + 第 2 站「实战应用」', act:()=>startSkill('s2')};
+  if(S.comp['e2']==null) return {label:'🎯 今日推荐：读故事第 3 节 The Yellow Letter', act:()=>openStory(2)};
+  if(mPct(S.theta.s3)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 3 + 第 3 站「单词关」', act:()=>startSkill('s3')};
+  if(S.extra.x1==null) return {label:'📚 今日推荐：泛读番外 2《寻人帖》', act:()=>openExtra(1)};
+  if(!S.writing.w1) return {label:'✍️ 今日推荐：完成 Tom 的寻人档案（本周写作）', act:()=>openStory(2)};
+  const decayed = SUBJECT.skills.find((s,i)=>skillUnlocked(i)&&(S.decayedTo[s.key]||0)>0.15);
+  if(decayed) return {label:'🎯 今日推荐：复习巩固「'+decayed.name.split('·')[1].trim()+'」', act:()=>startSkill(decayed.key)};
+  if(S.wrongBook.length>=4) return {label:'🎯 今日推荐：错题回炉（积压 '+S.wrongBook.length+' 道）', act:startRedo};
+  const frontier = SUBJECT.skills.find((s,i)=>skillUnlocked(i)&&mPct(S.theta[s.key])<MASTER_PCT);
+  if(frontier) return {label:'🎯 今日推荐：把「'+frontier.name.split('·')[1].trim()+'」冲到 '+MASTER_PCT+'%', act:()=>startSkill(frontier.key)};
+  if(S.wrongBook.length) return {label:'🎯 今日推荐：清空错题本（剩 '+S.wrongBook.length+' 道）', act:startRedo};
+  return {label:'🎉 本周任务全部完成！第 2 章下周见', act:null};
+}
+
+/* =================== 学习报告 =================== */
+function daysAgoText(ts){ if(!ts)return '未练习'; const d=Math.floor((Date.now()-ts)/DAY);
+  return d===0?'今天':d===1?'昨天':d+' 天前'; }
+function renderReport(){
+  let html='<div class="report" style="margin-top:4px">';
+  SUBJECT.skills.forEach(sk=>{
+    const st=S.skillStat[sk.key]||{t:0,c:0,sec:0}, pct=mPct(S.theta[sk.key]);
+    const acc=st.t?Math.round(100*st.c/st.t)+'%':'—';
+    const avg=st.t?(st.sec/st.t).toFixed(0)+'s':'—';
+    const col=pct>=MASTER_PCT?'var(--gold)':pct>=UNLOCK_PCT?'var(--mint)':'var(--air-blue)';
+    html+='<div class="wb-item"><div class="wq">'+sk.icon+' '+sk.name+'</div>'+
+      '<div class="mline" style="margin-top:8px"><div class="mbar"><i style="width:'+pct+'%;background:'+col+'"></i></div><span class="mpct num">'+pct+'%</span></div>'+
+      '<div class="wmeta"><span>答题 '+st.t+' 道</span><span>正确率 '+acc+'</span><span>平均用时 '+avg+'</span><span>上次练习：'+daysAgoText(S.lastPractice[sk.key])+'</span></div></div>';
+  });
+  html+='</div>';
+  const eps=STORY.map((_,i)=>S.comp[epKey(i)]!=null?1:0).reduce((a,b)=>a+b,0);
+  const compTxt=STORY.map((_,i)=>{const v=S.comp[epKey(i)];return v==null?'—':(v+'/3');}).join(' · ');
+  const blindTxt=STORY.map((_,i)=>{const v=S.blind[epKey(i)];return v==='done'?'🎧':v==='skip'?'跳过':'—';}).join(' · ');
+  const byS={}; S.wrongBook.forEach(e=>{const n=e.skill?(SUBJECT.skills.find(s=>s.key===e.skill)||{name:'体检'}).name.split('·').pop().trim():'体检'; byS[n]=(byS[n]||0)+1;});
+  const wbTxt=Object.entries(byS).map(([k,v])=>k+' × '+v).join('，')||'无';
+  html+='<div class="advice">📖 精读完成：'+eps+' / 3 节 · 读懂了吗得分：'+compTxt+
+    '<br>🎧 盲听挑战：'+blindTxt+(S.writing.w1?'<br>✍️ 本周写作已保存（记得拿去批改并让孩子朗读自己的作品）':'<br>✍️ 本周写作未完成')+
+    '<br>📕 待清错题分布：'+wbTxt+
+    '<br>💡 判读提示：盲听正确率低 = 听力输入量不足，优先加朗读遍数；正确率高但用时长 = 会而不熟，用错题回炉提速。</div>';
+  $('rp-body').innerHTML=html;
+  $('rp-save').value='';
+}
+$('btn-report').onclick=()=>{renderReport();show('scr-report');};
+$('btn-rp-back').onclick=()=>{renderMap();show('scr-map');};
+$('btn-export').onclick=()=>{ $('rp-save').value=JSON.stringify(S); $('rp-save').select(); };
+$('btn-import').onclick=()=>{
+  try{ const v=JSON.parse($('rp-save').value); if(!v||typeof v!=='object'||!('theta' in v)) throw 0;
+    S=Object.assign(S,v); save(); renderReport(); alert('导入成功！'); }
+  catch(e){ alert('导入失败：请确认粘贴的是完整的导出文本'); }
+};
+$('btn-reset').onclick=()=>{
+  if(!confirm('确定清空全部学习进度吗？此操作不可恢复（如需备份请先「导出」）'))return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  location.reload();
+};
+
+/* =================== 练习流程 =================== */
+let RUN=null, optMap=[], qShownAt=0, builtWords=[];
+function startDiag(){
+  RUN={mode:'diag', quiz:SUBJECT.diag.map(q=>Object.assign({b:0,skill:null,key:q.id},q)), idx:0, correct:0, streak:0, best:0, tagStat:{}};
+  $('sessbar').style.display='none'; show('scr-quiz'); renderQ(RUN.quiz[0]);
+}
+function startSkill(skKey){
+  if(LESSON[skKey] && !S.lesson[skKey]){ renderLesson(skKey); show('scr-lesson'); return; }
+  beginQuiz(skKey);
+}
+function beginQuiz(skKey){
+  RUN={mode:'skill', sk:skKey, idx:0, correct:0, streak:0, best:0,
+       startTheta:S.theta[skKey],
+       session:{used:new Set(), usedReview:new Set(), lastGid:null},
+       current:null};
+  $('sess-name').textContent='掌握度'; $('sessbar').style.display='flex';
+  updateSessBar(); show('scr-quiz'); nextSkillQ();
+}
+function startRedo(){
+  const items=S.wrongBook.slice().sort((a,b)=>a.at-b.at).slice(0,8)
+    .map(e=>({key:e.key,skill:e.skill,b:0,d:e.d||2,type:e.type,q:e.q,opts:e.opts,words:e.words,a:e.a,ex:e.ex,review:true}));
+  if(!items.length) return;
+  RUN={mode:'redo', quiz:shuffle(items), idx:0, correct:0, streak:0, best:0};
+  $('sessbar').style.display='none'; show('scr-quiz'); renderQ(RUN.quiz[0]);
+}
+function nextSkillQ(){
+  let q=null;
+  if((RUN.idx===2||RUN.idx===6)) q=dueReview(RUN.session);
+  if(!q){ q=pickQuestion(RUN.sk,RUN.session); RUN.session.lastGid=q.gen?q.key.split(':')[1]:null; }
+  RUN.session.used.add(q.key);
+  RUN.current=q; renderQ(q);
+}
+function updateSessBar(){
+  if(RUN&&RUN.mode==='skill'){ const p=mPct(S.theta[RUN.sk]);
+    $('sess-mbar').style.width=p+'%'; $('sess-mpct').textContent=p+'%'; }
+}
+function renderQ(q){
+  qShownAt=Date.now();
+  const total=RUN.mode==='skill'?MAX_Q:RUN.quiz.length;
+  $('qbar').style.width=(100*RUN.idx/total)+'%';
+  $('q-count').textContent='第 '+(RUN.idx+1)+(RUN.mode==='skill'?' 题':' / '+total+' 题');
+  $('q-diff').innerHTML=q.d?('<span class="diffchip d'+q.d+'">'+({1:'基础',2:'进阶',3:'挑战'})[q.d]+'</span>'):'';
+  $('q-flag').innerHTML=q.review?'<span class="review-flag">♻︎ 错题回炉</span>':'';
+  $('combo').textContent=RUN.streak>=3?'🔥×'+RUN.streak:'';
+  $('qtext').innerHTML=q.q;
+  $('feedback').className='feedback'; $('btn-next').classList.remove('show');
+  const opts=$('opts'), inputrow=$('inputrow'), ow=$('orderwrap');
+  opts.innerHTML=''; inputrow.style.display='none'; ow.style.display='none';
+  if(q.type==='mc'){
+    const order=shuffle(q.opts.map((_,i)=>i)); optMap=order;
+    order.forEach((oi,pos)=>{ const b=document.createElement('button'); b.className='opt';
+      b.innerHTML='<span class="key">'+String.fromCharCode(65+pos)+'</span><span>'+q.opts[oi]+'</span>';
+      b.onclick=()=>answerMC(q,pos); opts.appendChild(b); });
+  } else if(q.type==='order'){
+    ow.style.display='block'; builtWords=[];
+    renderOrder(q);
+  } else {
+    inputrow.style.display='flex';
+    const inp=$('ans-input'); inp.value=''; inp.disabled=false; $('btn-submit').disabled=false;
+    setTimeout(()=>inp.focus(),50);
+  }
+}
+function renderOrder(q){
+  const built=$('order-built'), chips=$('order-chips');
+  built.innerHTML=''; built.classList.toggle('empty',!builtWords.length);
+  builtWords.forEach((w,i)=>{ const c=document.createElement('button'); c.className='chip'; c.textContent=w.word;
+    c.onclick=()=>{ if($('btn-order-ok').disabled)return; builtWords.splice(i,1); renderOrder(q); };
+    built.appendChild(c); });
+  chips.innerHTML='';
+  q._shuf = q._shuf || shuffle(q.words.map((word,id)=>({word,id})));
+  q._shuf.forEach(w=>{ const c=document.createElement('button');
+    c.className='chip'+(builtWords.find(x=>x.id===w.id)?' used':''); c.textContent=w.word;
+    c.onclick=()=>{ if($('btn-order-ok').disabled)return; builtWords.push(w); renderOrder(q); };
+    chips.appendChild(c); });
+}
+$('btn-order-clear').onclick=()=>{ if($('btn-order-ok').disabled)return; builtWords=[]; renderOrder(RUN.mode==='skill'?RUN.current:RUN.quiz[RUN.idx]); };
+$('btn-order-ok').onclick=()=>{
+  const q=RUN.mode==='skill'?RUN.current:RUN.quiz[RUN.idx];
+  if(builtWords.length<q.words.length) return;
+  $('btn-order-ok').disabled=true; $('btn-order-clear').disabled=true;
+  const right = norm(builtWords.map(w=>w.word).join(' '))===norm(q.a);
+  settle(q,right);
+};
+function norm(s){ return String(s).trim().toLowerCase().replace(/\s+/g,' ').replace(/[.。!！?？]$/,''); }
+function answerMC(q,pos){
+  const right=optMap[pos]===q.a;
+  document.querySelectorAll('#opts .opt').forEach((b,i)=>{ b.disabled=true;
+    if(optMap[i]===q.a)b.classList.add('correct'); else if(i===pos&&!right)b.classList.add('wrong'); });
+  settle(q,right);
+}
+function answerInput(){
+  if($('ans-input').disabled) return;
+  const q=RUN.mode==='skill'?RUN.current:RUN.quiz[RUN.idx];
+  const v=norm($('ans-input').value); if(v==='')return;
+  const right=v===norm(q.a);
+  $('ans-input').disabled=true; $('btn-submit').disabled=true;
+  settle(q,right);
+}
+const CHEERS=['太棒了！','漂亮！','Correct!','就是这样！','稳！','Well done!','Nice one!'];
+function settle(q,right){
+  S.totalAnswered++;
+  if(right){S.totalCorrect++;RUN.correct++;RUN.streak++;RUN.best=Math.max(RUN.best,RUN.streak);}else RUN.streak=0;
+  if(RUN.mode==='diag'){ RUN.tagStat[q.tag]=RUN.tagStat[q.tag]||{t:0,c:0}; RUN.tagStat[q.tag].t++; if(right)RUN.tagStat[q.tag].c++; }
+  if(q.skill){ updateTheta(q.skill,q.b,right); if(right)S.doneRight[q.key]=true;
+    const st=S.skillStat[q.skill]=S.skillStat[q.skill]||{t:0,c:0,sec:0};
+    st.t++; if(right)st.c++; st.sec+=Math.min(120,(Date.now()-qShownAt)/1000); }
+  const bi=S.wrongBook.findIndex(e=>e.key===q.key);
+  if(right){ if(q.review&&bi>-1){ S.wrongBook[bi].streak=(S.wrongBook[bi].streak||0)+1;
+      if(S.wrongBook[bi].streak>=2)S.wrongBook.splice(bi,1);} }
+  else{ if(bi>-1){S.wrongBook[bi].misses++;S.wrongBook[bi].streak=0;S.wrongBook[bi].at=Date.now();}
+    else S.wrongBook.push({key:q.key,skill:q.skill,d:q.d,type:q.type,q:q.q,opts:q.opts,words:q.words,a:q.a,ex:q.ex,misses:1,streak:0,at:Date.now()}); }
+  save(); updateSessBar();
+  const fb=$('feedback'); fb.className='feedback '+(right?'ok':'no');
+  if(right) $('fb-head').textContent=CHEERS[Math.floor(Math.random()*CHEERS.length)]+(RUN.streak>=3?'  🔥连对 '+RUN.streak+' 题':'');
+  else $('fb-head').innerHTML='正确答案：'+(q.type==='mc'?q.opts[q.a]:(q.type==='order'?en(q.a.charAt(0).toUpperCase()+q.a.slice(1)):q.a));
+  $('fb-body').innerHTML=q.ex;
+  let last=false;
+  if(RUN.mode==='skill'){
+    const p=mPct(S.theta[RUN.sk]);
+    if(RUN.idx+1>=MAX_Q) last=true;
+    if(RUN.idx+1>=MIN_Q && p>=MASTER_PCT && RUN.streak>=3) last=true;
+  } else last=RUN.idx+1>=RUN.quiz.length;
+  $('btn-next').classList.add('show');
+  $('btn-next').textContent=last?'查看成绩 🏁':'下一题 →';
+  $('btn-next').dataset.last=last?'1':'';
+}
+$('btn-next').onclick=()=>{
+  $('btn-order-ok').disabled=false; $('btn-order-clear').disabled=false;
+  if($('btn-next').dataset.last==='1'){finishRun();return;}
+  RUN.idx++;
+  if(RUN.mode==='skill') nextSkillQ(); else renderQ(RUN.quiz[RUN.idx]);
+};
+$('btn-submit').onclick=answerInput;
+$('ans-input').addEventListener('keydown',e=>{if(e.key==='Enter')answerInput();});
+$('btn-quit').onclick=()=>{RUN=null;$('btn-order-ok').disabled=false;$('btn-order-clear').disabled=false;renderMap();show('scr-map');};
+
+/* =================== 结算 =================== */
+function finishRun(){
+  const card=$('rescard'); let html='';
+  const answered=RUN.idx+1, pctAcc=Math.round(100*RUN.correct/answered);
+  if(RUN.mode==='diag'){
+    S.diagDone=true; save();
+    html+='<div style="font-size:42px">🧳</div><h2>行前体检报告</h2>'+
+      '<p class="sub">总正确率 <b class="num">'+pctAcc+'%</b> · 答对 '+RUN.correct+' / '+answered+'</p><div class="report">';
+    const weak=[];
+    for(const tag in RUN.tagStat){ const s=RUN.tagStat[tag],r=s.c/s.t,rp=Math.round(r*100);
+      const col=r>=0.8?'var(--mint)':r>=0.5?'var(--gold)':'var(--coral)'; if(r<0.8)weak.push(tag);
+      html+='<div class="rrow"><div class="rname"><span>'+tag+'</span><span class="num">'+s.c+'/'+s.t+'</span></div>'+
+        '<div class="rbar"><i style="width:'+rp+'%;background:'+col+'"></i></div></div>'; }
+    html+='</div><div class="advice">'+(weak.length
+      ?'💡 <b>'+weak.join('、')+'</b> 还有点生疏。做错的题已收进错题本，会混进后面的练习帮你巩固。'
+      :'💪 小学底子很扎实！可以放心开始寻踪。')+'</div>'+
+      '<div class="resbtns"><button class="btn-main" id="r-map">开始寻踪 →</button></div>';
+  }
+  else if(RUN.mode==='redo'){
+    html+='<div style="font-size:42px">♻️</div><h2>错题回炉完成</h2>'+
+      '<p class="sub">答对 '+RUN.correct+' / '+answered+' 题 · 剩余待清错题 '+S.wrongBook.length+' 道</p>'+
+      '<div class="resbtns"><button class="btn-ghost" id="r-map">返回地图</button>'+
+      (S.wrongBook.length?'<button class="btn-main" id="r-again">再炼一轮</button>':'')+'</div>';
+  }
+  else{
+    const p0=mPct(RUN.startTheta), p1=mPct(S.theta[RUN.sk]), dp=p1-p0, mastered=p1>=MASTER_PCT;
+    const skName=SUBJECT.skills.find(s=>s.key===RUN.sk).name;
+    html+='<div style="font-size:42px">'+(mastered?'🔎':'🧩')+'</div>'+
+      '<h2>'+(mastered?'本站掌握达标！':'线索收集中')+'</h2>'+
+      '<p class="sub">'+skName+'<br>本次答题 '+answered+' 道 · 正确率 <b class="num">'+pctAcc+'%</b>'+
+      (RUN.best>=3?' · 最高连击 🔥×'+RUN.best:'')+'</p>'+
+      '<div class="mline'+(mastered?' mastered':'')+'" style="margin-top:16px"><div class="mbar"><i style="width:'+p1+'%"></i></div>'+
+      '<span class="mpct num">'+p1+'%</span></div>'+
+      '<p class="sub">掌握度 '+(dp>=0?'<span class="deltaup">+'+dp+'%</span>':'<span class="deltadown">'+dp+'%</span>')+
+      (mastered?'<br>下一站已解锁，也可以随时回来冲更高掌握度':
+        p1>=UNLOCK_PCT?'<br>已过 '+UNLOCK_PCT+'% 解锁线！继续练到 '+MASTER_PCT+'% 即为掌握':
+        '<br>达到 '+UNLOCK_PCT+'% 解锁下一站，系统会自动匹配合适难度')+'</p>'+
+      '<div class="resbtns"><button class="btn-ghost" id="r-map">返回地图</button>'+
+      '<button class="btn-main" id="r-retry">'+(mastered?'再冲一轮':'继续练这站')+'</button></div>';
+  }
+  card.innerHTML=html; show('scr-result');
+  const rMap=$('r-map'),rRetry=$('r-retry'),rAgain=$('r-again');
+  if(rMap)rMap.onclick=()=>{renderMap();show('scr-map');};
+  if(rRetry){const k=RUN.sk;rRetry.onclick=()=>startSkill(k);}
+  if(rAgain)rAgain.onclick=()=>startRedo();
+}
+
+/* =================== 错题本 =================== */
+function renderWrongBook(){
+  const list=$('wb-list');
+  if(!S.wrongBook.length){ list.innerHTML='<div class="wb-empty">🎉 错题本空空如也！<br>要么还没开始，要么全都出炉了。</div>'; return; }
+  let html='<button class="redo-btn" id="btn-redo">♻️ 错题回炉 · 立刻重练 '+Math.min(8,S.wrongBook.length)+' 道</button>';
+  S.wrongBook.slice().sort((a,b)=>b.at-a.at).forEach(e=>{
+    const skName=e.skill?(SUBJECT.skills.find(s=>s.key===e.skill)||{}).name||'行前体检':'行前体检';
+    const ansTxt=e.type==='mc'?e.opts[e.a]:(e.type==='order'?en(e.a):e.a);
+    html+='<div class="wb-item"><div class="wq">'+e.q+'</div>'+
+      '<div class="wmeta"><span>'+skName+'</span><span>错了 '+e.misses+' 次</span>'+
+      '<span class="clearchip '+(e.streak>0?'c1':'')+'">出炉进度 '+(e.streak||0)+'/2</span></div>'+
+      '<div class="wans">正确答案：<b>'+ansTxt+'</b><br>'+e.ex+'</div>'+
+      '<button class="wtoggle">看答案与讲解 ▾</button></div>';
+  });
+  list.innerHTML=html;
+  list.querySelectorAll('.wtoggle').forEach(b=>{ b.onclick=()=>{const it=b.closest('.wb-item');it.classList.toggle('open');
+    b.textContent=it.classList.contains('open')?'收起 ▴':'看答案与讲解 ▾';}; });
+  const rd=$('btn-redo'); if(rd)rd.onclick=startRedo;
+}
+$('btn-wrongbook').onclick=()=>{renderWrongBook();show('scr-wrongbook');};
+$('btn-wb-back').onclick=()=>{renderMap();show('scr-map');};
+
+applyDecay();
+renderMap();
+</script>
+</body>
+</html>

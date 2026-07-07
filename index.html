@@ -692,7 +692,7 @@ const SUBJECT = {
       const canTTS = (typeof TTS!=='undefined') && TTS.ok;
       if(!canTTS) return {type:'in', q:'默写：「'+w.cn+'」的英文是？（提示首字母 '+w.en[0]+'）', a:w.en,
         ex:'<b>'+w.en+'</b> '+w.cn+'。'};
-      return {type:'in', q:'🎧 听音拼写：点按钮听单词，把听到的词拼出来。<br><button class="abtn" type="button" onclick="TTS.speak(\''+w.en+'\')">🔊 播放 / 再听一遍</button><br><span style="font-size:13px;color:var(--ink-dim)">提示：中文意思是「'+w.cn+'」</span>', a:w.en,
+      return {type:'in', q:'🎧 听音拼写：点按钮听单词，把听到的词拼出来。<br><button class="abtn" type="button" onclick="speakWord(\''+w.en+'\')">🔊 播放 / 再听一遍</button><br><span style="font-size:13px;color:var(--ink-dim)">提示：中文意思是「'+w.cn+'」</span>', a:w.en,
         ex:'这个词是 <b>'+w.en+'</b>（'+w.cn+'）。听写是期中听力和拼写的双重训练。'};}}
    ]
   }
@@ -804,9 +804,27 @@ const TTS={ok:false,voice:null,rate:0.75,list:[],_scanned:false,
  stop(){ if(TTS.ok) speechSynthesis.cancel(); }};
 TTS.init();
 
+/* ====== 录音优先播放：仓库 audio/ 下有 mp3 就用真人级录音，否则回退系统朗读 ====== */
+const san = e => String(e).toLowerCase().replace(/[^a-z]+/g,'_');
+const AUDIO={miss:false,cur:null,
+ play(name,fallbackText,onend){
+   if(AUDIO.miss){ TTS.speak(fallbackText,onend); return; }
+   AUDIO.stopFile(); TTS.stop();
+   let a; try{ a=new Audio('audio/'+name+'.mp3'); }catch(e){ AUDIO.miss=true; TTS.speak(fallbackText,onend); return; }
+   try{ a.playbackRate=TTS.rate; if('preservesPitch' in a)a.preservesPitch=true; }catch(e){}
+   a.onended=()=>{ AUDIO.cur=null; if(onend)onend(); };
+   a.onerror=()=>{ AUDIO.cur=null; AUDIO.miss=true; TTS.speak(fallbackText,onend); };
+   AUDIO.cur=a;
+   try{ const p=a.play(); if(p&&p.catch)p.catch(()=>{ AUDIO.cur=null; AUDIO.miss=true; TTS.speak(fallbackText,onend); }); }
+   catch(e){ AUDIO.cur=null; AUDIO.miss=true; TTS.speak(fallbackText,onend); }
+ },
+ stopFile(){ if(AUDIO.cur){ try{AUDIO.cur.pause();}catch(e){} AUDIO.cur=null; } },
+ stop(){ AUDIO.stopFile(); TTS.stop(); }};
+function speakWord(en){ AUDIO.play('w_'+san(en), en+'. '+en+'.', null); }
+
 /* =================== 界面基架 =================== */
 const $ = id => document.getElementById(id);
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); window.scrollTo(0,0); TTS.stop(); }
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); window.scrollTo(0,0); AUDIO.stop(); }
 
 /* =================== 故事阅读器 =================== */
 let curEp=0, tapMode=false, playing=false;
@@ -875,11 +893,12 @@ function bindStory(e,k,blindDone){
     if(!on) w.classList.add('on'); }; });
   /* 点读 */
   $('st-body').querySelectorAll('.sent').forEach(sp=>{ sp.onclick=()=>{ if(!tapMode)return;
-    TTS.stop();
+    AUDIO.stop();
     $('st-body').querySelectorAll('.sent').forEach(x=>x.classList.remove('playing'));
     sp.classList.add('playing');
     const txt=plain(e.paras[+sp.dataset.p][+sp.dataset.s]);
-    TTS.speak(txt,()=>sp.classList.remove('playing')); }; });
+    const fi=[...document.getElementById('st-body').querySelectorAll('.sent')].indexOf(sp);
+    AUDIO.play('s'+curEp+'_'+fi, txt, ()=>sp.classList.remove('playing')); }; });
   /* 盲听 */
   const bp=$('bb-play'), bs=$('bb-skip');
   if(bp){ bp.onclick=()=>{ playAll(e); showGist(e,k); };
@@ -904,7 +923,7 @@ function bindStory(e,k,blindDone){
   const sv=$('btn-write-save'); if(sv) sv.onclick=()=>{ S.writing.w1=$('write-box').value; save(); sv.textContent='✓ 已保存'; };
 }
 function playAll(e){
-  TTS.stop(); playing=true;
+  AUDIO.stop(); playing=true;
   const sents=[...$('st-body').querySelectorAll('.sent')];
   let i=0;
   const step=()=>{ if(!playing||i>=sents.length){sents.forEach(x=>x.classList.remove('playing'));playing=false;$('ab-play').textContent='▶️ 整节朗读';return;}
@@ -912,7 +931,7 @@ function playAll(e){
     const sp=sents[i]; sp.classList.add('playing');
     if(!$('pcard').classList.contains('blind')) sp.scrollIntoView({block:'center',behavior:'smooth'});
     const txt=plain(e.paras[+sp.dataset.p][+sp.dataset.s]);
-    i++; TTS.speak(txt,step); };
+    const fi=i; i++; AUDIO.play('s'+curEp+'_'+fi, txt, step); };
   $('ab-play').textContent='🔊 朗读中…';
   step();
 }
@@ -929,13 +948,13 @@ function showGist(e,k){
       if(mq.dataset.done)return; mq.dataset.done='1'; done++;
       mq.querySelectorAll('.mqo').forEach(x=>{ x.disabled=true;
         if(+x.dataset.oi===c.a)x.classList.add('correct'); else if(x===b&&+b.dataset.oi!==c.a)x.classList.add('wrong'); });
-      if(done>=e.gist.length){ TTS.stop(); playing=false; S.blind[k]='done'; save();
+      if(done>=e.gist.length){ AUDIO.stop(); playing=false; S.blind[k]='done'; save();
         setTimeout(()=>renderStory(),700); }
     };});
   });
 }
-$('ab-play').onclick=()=>{ if(playing){playing=false;TTS.stop();$('ab-play').textContent='▶️ 整节朗读';} else playAll(STORY[curEp]); };
-$('ab-stop').onclick=()=>{ playing=false; TTS.stop(); $('ab-play').textContent='▶️ 整节朗读';
+$('ab-play').onclick=()=>{ if(playing){playing=false;AUDIO.stop();$('ab-play').textContent='▶️ 整节朗读';} else playAll(STORY[curEp]); };
+$('ab-stop').onclick=()=>{ playing=false; AUDIO.stop(); $('ab-play').textContent='▶️ 整节朗读';
   document.querySelectorAll('.sent').forEach(x=>x.classList.remove('playing')); };
 $('ab-rate').onclick=()=>{ const i=RATES.indexOf(TTS.rate); TTS.setRate(RATES[(i+1)%RATES.length]); };
 $('ab-tap').onclick=()=>{ tapMode=!tapMode; $('ab-tap').textContent='👆 点读：'+(tapMode?'开':'关'); $('ab-tap').classList.toggle('on',tapMode);
@@ -960,29 +979,29 @@ function renderVocab(){
   });
   $('vb-body').innerHTML=html;
   $('vb-body').querySelectorAll('.vb-say').forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation();
-    TTS.stop(); TTS.speak(b.dataset.w); }; });
+    speakWord(b.dataset.w); }; });
   $('vb-body').querySelectorAll('.vb-card').forEach(c=>{ c.onclick=()=>{ if(!vbTest)return;
     const m=c.querySelector('.vb-meaning'), p=c.querySelector('.vb-peek');
     const hidden=m.style.display==='none';
     m.style.display=hidden?'':'none'; if(p)p.style.display=hidden?'none':''; }; });
 }
 function vbPlayAll(){
-  TTS.stop(); vbPlaying=true;
+  AUDIO.stop(); vbPlaying=true;
   let i=0;
   const cards=[...$('vb-body').querySelectorAll('.vb-card')];
   const step=()=>{ if(!vbPlaying||i>=W1.length){vbPlaying=false;$('vb-playall').textContent='▶️ 全部连读';cards.forEach(x=>x.style.borderColor='');return;}
     cards.forEach(x=>x.style.borderColor='');
     if(cards[i]){cards[i].style.borderColor='var(--air-red)';if(cards[i].scrollIntoView)cards[i].scrollIntoView({block:'center',behavior:'smooth'});}
     const w=W1[i]; i++;
-    TTS.speak(w.en+'. '+w.en+'.',()=>setTimeout(step,350)); };
+    AUDIO.play('w_'+san(w.en), w.en+'. '+w.en+'.', ()=>setTimeout(step,350)); };
   $('vb-playall').textContent='🔊 连读中…'; step();
 }
 $('btn-vocab').onclick=()=>{ S.vocabSeen=true; save(); renderVocab(); show('scr-vocab'); };
 $('btn-vb-back').onclick=()=>{renderMap();show('scr-map');};
 $('vb-test').onclick=()=>{ vbTest=!vbTest; $('vb-test').textContent='🙈 自测模式：'+(vbTest?'开':'关');
   $('vb-test').classList.toggle('on',vbTest); renderVocab(); };
-$('vb-playall').onclick=()=>{ if(vbPlaying){vbPlaying=false;TTS.stop();$('vb-playall').textContent='▶️ 全部连读';} else vbPlayAll(); };
-$('vb-stopall').onclick=()=>{ vbPlaying=false; TTS.stop(); $('vb-playall').textContent='▶️ 全部连读'; };
+$('vb-playall').onclick=()=>{ if(vbPlaying){vbPlaying=false;AUDIO.stop();$('vb-playall').textContent='▶️ 全部连读';} else vbPlayAll(); };
+$('vb-stopall').onclick=()=>{ vbPlaying=false; AUDIO.stop(); $('vb-playall').textContent='▶️ 全部连读'; };
 
 /* =================== 泛读番外 =================== */
 let curEx=0, exPlaying=false;
@@ -1030,19 +1049,19 @@ function renderExtra(){
     if(!on)w.classList.add('on'); }; });
 }
 function playExtra(){
-  TTS.stop(); exPlaying=true;
+  AUDIO.stop(); exPlaying=true;
   const e=EXTRA[curEx], sents=[...$('ex-body').querySelectorAll('.sent')];
   const flat=e.paras.flat();
   let i=0;
   const step=()=>{ if(!exPlaying||i>=sents.length){sents.forEach(x=>x.classList.remove('playing'));exPlaying=false;$('ex-play').textContent='▶️ 朗读本篇';return;}
     sents.forEach(x=>x.classList.remove('playing'));
     sents[i].classList.add('playing');
-    const txt=plain(flat[i]); i++;
-    TTS.speak(txt,step); };
+    const txt=plain(flat[i]); const fi=i; i++;
+    AUDIO.play('x'+curEx+'_'+fi, txt, step); };
   $('ex-play').textContent='🔊 朗读中…'; step();
 }
-$('ex-play').onclick=()=>{ if(exPlaying){exPlaying=false;TTS.stop();$('ex-play').textContent='▶️ 朗读本篇';} else playExtra(); };
-$('ex-stop').onclick=()=>{ exPlaying=false; TTS.stop(); $('ex-play').textContent='▶️ 朗读本篇';
+$('ex-play').onclick=()=>{ if(exPlaying){exPlaying=false;AUDIO.stop();$('ex-play').textContent='▶️ 朗读本篇';} else playExtra(); };
+$('ex-stop').onclick=()=>{ exPlaying=false; AUDIO.stop(); $('ex-play').textContent='▶️ 朗读本篇';
   document.querySelectorAll('#ex-body .sent').forEach(x=>x.classList.remove('playing')); };
 $('btn-extra').onclick=()=>openExtra(S.extra.x0==null?0:1);
 $('btn-ex-back').onclick=()=>{renderMap();show('scr-map');};

@@ -258,9 +258,9 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
     <div class="audiobar" id="audiobar">
       <button class="abtn" id="ab-play">▶️ 整节朗读</button>
       <button class="abtn" id="ab-stop">⏹ 停止</button>
-      <button class="abtn" id="ab-rate">🐢 慢速：关</button>
+      <button class="abtn" id="ab-rate">⏱ 语速 0.75x</button>
       <button class="abtn" id="ab-tap">👆 点读：关</button>
-      <select class="abtn" id="ab-voice" style="max-width:170px;display:none"></select>
+      <select class="abtn" id="ab-voice" style="max-width:170px"><option value="">🗣 系统默认语音</option></select>
     </div>
     <div class="ttsnote" id="ttsnote">朗读使用手机自带语音引擎。若无声音：请用 Safari / Chrome 打开（微信内置浏览器可能不支持），并确认未开静音键。</div>
     <div id="st-body"></div>
@@ -550,7 +550,7 @@ const LESSON={
    {q:'—<span class="en">___?</span> —<span class="en">She is from Sydney.</span>',o:['<span class="en">Where is she from</span>','<span class="en">How old is she</span>','<span class="en">Who is she</span>','<span class="en">What class is she in</span>'],a:0,ex:'答句是地点，反推问 Where。'},
    {q:'连词成句时第一步应该找什么？',o:['主语和 be 动词','最长的单词','中文里的第一个词','形容词'],a:0,ex:'先搭「主语 + be」骨架，其余成分再挂上去。'}
   ]},
- s3:{title:'📘 讲堂 3 · 单词怎么记才牢',sub:'期中卷第四大题：看汉语写单词，靠的是这三招',
+ s3:{title:'📘 讲堂 3 · 单词怎么记才牢',sub:'先在「单词本」学过一遍再来测；期中卷第四大题就是这个题型',
   obs:['<b>音节拆读</b>：classmate → class·mate；guitar → gui·tar。<b>读出来再拼</b>，比死背字母串牢一倍。',
        '<b>词不离句</b>：记 Emma is my classmate. 而不是只记 c-l-a-s-s-m-a-t-e——考试就是在句子里考。',
        '<b>错词回炉</b>：这一站拼错的词自动进错题本，连对两次才出炉；Anki 负责一周后还记得。'],
@@ -769,28 +769,38 @@ function dueReview(session){
 }
 
 /* =================== TTS 朗读模块 =================== */
-const TTS={ok:false,voice:null,slow:false,list:[],
+const RATES=[0.5,0.75,1,1.25];
+const TTS={ok:false,voice:null,rate:0.75,list:[],_scanned:false,
  init(){ if(!('speechSynthesis' in window)) return;
    TTS.ok=true;
-   const load=()=>{ const vs=speechSynthesis.getVoices();
-     TTS.list=vs.filter(v=>/^en/i.test(v.lang));
-     const pref=S&&S.voicePref;
-     TTS.voice = (pref&&TTS.list.find(v=>v.name===pref)) ||
-       TTS.list.find(v=>/^en[-_](GB|AU)/i.test(v.lang)) || TTS.list.find(v=>/^en[-_]US/i.test(v.lang)) || TTS.list[0] || null;
-     const sel=document.getElementById('ab-voice');
-     if(sel&&TTS.list.length){
-       sel.style.display='';
-       sel.innerHTML=TTS.list.map(v=>'<option value="'+v.name.replace(/"/g,'')+'"'+(TTS.voice&&v.name===TTS.voice.name?' selected':'')+'>🗣 '
+   TTS.rate = (S&&RATES.includes(S.ratePref))?S.ratePref:0.75;
+   TTS.refresh(); speechSynthesis.onvoiceschanged=()=>TTS.refresh(); },
+ refresh(){ if(!TTS.ok) return;
+   const vs=speechSynthesis.getVoices();
+   const list=vs.filter(v=>/^en/i.test(v.lang));
+   if(!list.length) return;               // iOS 首次可能为空，等发声后再扫
+   TTS.list=list; TTS._scanned=true;
+   const pref=S&&S.voicePref;
+   TTS.voice = (pref&&list.find(v=>v.name===pref)) ||
+     list.find(v=>/^en[-_](GB|AU)/i.test(v.lang)) || list.find(v=>/^en[-_]US/i.test(v.lang)) || list[0] || null;
+   const sel=document.getElementById('ab-voice');
+   if(sel){
+     sel.innerHTML='<option value="">🗣 自动（'+(TTS.voice?TTS.voice.name.replace(/Microsoft |Google |Apple /g,''):'系统默认')+'）</option>'+
+       list.map(v=>'<option value="'+v.name.replace(/"/g,'')+'"'+(pref&&v.name===pref?' selected':'')+'>🗣 '
          +v.name.replace(/Microsoft |Google |Apple /g,'')+' ('+v.lang+')</option>').join('');
-       sel.onchange=()=>{ const v=TTS.list.find(x=>x.name.replace(/"/g,'')===sel.value);
-         if(v){TTS.voice=v; S.voicePref=v.name; save(); TTS.stop(); TTS.speak('Hello! I am your new reading voice.');} };
-     } };
-   load(); speechSynthesis.onvoiceschanged=load; },
+     sel.onchange=()=>{ if(sel.value===''){ S.voicePref=null; save(); TTS.refresh(); return; }
+       const v=TTS.list.find(x=>x.name.replace(/"/g,'')===sel.value);
+       if(v){TTS.voice=v; S.voicePref=v.name; save(); TTS.stop(); TTS.speak('Hello! I am your new reading voice.');} };
+   } },
+ setRate(r){ TTS.rate=r; S.ratePref=r; save();
+   const b=document.getElementById('ab-rate'); if(b)b.textContent='⏱ 语速 '+r+'x'; },
  speak(text,onend){ if(!TTS.ok){if(onend)onend();return;}
    const u=new SpeechSynthesisUtterance(text);
    if(TTS.voice)u.voice=TTS.voice; u.lang=TTS.voice?TTS.voice.lang:'en-US';
-   u.rate=TTS.slow?0.72:0.92; u.onend=onend||null; u.onerror=onend||null;
-   speechSynthesis.speak(u); },
+   u.rate=TTS.rate; u.onend=onend||null; u.onerror=onend||null;
+   speechSynthesis.speak(u);
+   if(!TTS._scanned) setTimeout(()=>TTS.refresh(), 400);   // iOS：首次发声后语音列表才可用
+ },
  stop(){ if(TTS.ok) speechSynthesis.cancel(); }};
 TTS.init();
 
@@ -810,6 +820,7 @@ function openStory(ep){
 }
 function renderStory(){
   playing=false; tapMode=false; $('ab-tap').classList.remove('on'); $('ab-tap').textContent='👆 点读：关';
+  TTS.refresh(); $('ab-rate').textContent='⏱ 语速 '+TTS.rate+'x';
   const tabs=$('eptabs'); tabs.innerHTML='';
   STORY.forEach((e,i)=>{ const b=document.createElement('button');
     b.className='eptab'+(i===curEp?' cur':'');
@@ -926,7 +937,7 @@ function showGist(e,k){
 $('ab-play').onclick=()=>{ if(playing){playing=false;TTS.stop();$('ab-play').textContent='▶️ 整节朗读';} else playAll(STORY[curEp]); };
 $('ab-stop').onclick=()=>{ playing=false; TTS.stop(); $('ab-play').textContent='▶️ 整节朗读';
   document.querySelectorAll('.sent').forEach(x=>x.classList.remove('playing')); };
-$('ab-rate').onclick=()=>{ TTS.slow=!TTS.slow; $('ab-rate').textContent='🐢 慢速：'+(TTS.slow?'开':'关'); $('ab-rate').classList.toggle('on',TTS.slow); };
+$('ab-rate').onclick=()=>{ const i=RATES.indexOf(TTS.rate); TTS.setRate(RATES[(i+1)%RATES.length]); };
 $('ab-tap').onclick=()=>{ tapMode=!tapMode; $('ab-tap').textContent='👆 点读：'+(tapMode?'开':'关'); $('ab-tap').classList.toggle('on',tapMode);
   document.getElementById('st-text').parentElement.classList.toggle('readmode',tapMode); };
 $('btn-story').onclick=()=>openStory(firstUnread());
@@ -966,7 +977,7 @@ function vbPlayAll(){
     TTS.speak(w.en+'. '+w.en+'.',()=>setTimeout(step,350)); };
   $('vb-playall').textContent='🔊 连读中…'; step();
 }
-$('btn-vocab').onclick=()=>{renderVocab();show('scr-vocab');};
+$('btn-vocab').onclick=()=>{ S.vocabSeen=true; save(); renderVocab(); show('scr-vocab'); };
 $('btn-vb-back').onclick=()=>{renderMap();show('scr-map');};
 $('vb-test').onclick=()=>{ vbTest=!vbTest; $('vb-test').textContent='🙈 自测模式：'+(vbTest?'开':'关');
   $('vb-test').classList.toggle('on',vbTest); renderVocab(); };
@@ -1075,6 +1086,7 @@ $('btn-ls-back').onclick=()=>{renderMap();show('scr-map');};
 /* =================== 本周计划 =================== */
 const PLAN=[
  {d:'周一',items:[
+  {t:'🔤 单词本预习：20 个词各跟读两遍（生词先混个脸熟）',auto:()=>!!S.vocabSeen},
   {t:'🎧📖 精读第 1 节 The Old Box（盲听→精读→点读）',auto:()=>S.comp.e0!=null},
   {t:'🗣 影子跟读第 1 节 3 分钟（开点读，逐句模仿）',key:'m_sh1'},
   {t:'🃏 Anki 8 分钟',key:'m_ak1'}]},
@@ -1186,6 +1198,7 @@ function renderMap(){
 /* =================== 今日推荐 =================== */
 function recommend(){
   if(!S.diagDone) return {label:'🎯 今日推荐：先完成「行前体检」', act:startDiag};
+  if(!S.vocabSeen) return {label:'🔤 今日推荐：到「单词本」预习词汇（每个词跟读两遍）', act:()=>{S.vocabSeen=true;save();renderVocab();show('scr-vocab');}};
   if(S.comp['e0']==null) return {label:'🎯 今日推荐：读故事第 1 节 The Old Box（先盲听）', act:()=>openStory(0)};
   if(mPct(S.theta.s1)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 1 + 第 1 站「语言基石」', act:()=>startSkill('s1')};
   if(S.comp['e1']==null) return {label:'🎯 今日推荐：读故事第 2 节 A New Classmate', act:()=>openStory(1)};

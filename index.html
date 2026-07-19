@@ -241,8 +241,9 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
       <button class="wrongbtn" id="btn-plan" style="flex:1">🗓 本周计划</button>
     </div>
     <div style="display:flex;gap:10px">
+      <button class="wrongbtn" id="btn-srs" style="flex:1.2">🃏 记忆卡 <span class="badge" id="srs-badge" style="background:var(--air-blue)">0</span></button>
       <button class="wrongbtn" id="btn-wrongbook" style="flex:1">📕 错题本 <span class="badge" id="wb-badge">0</span></button>
-      <button class="wrongbtn" id="btn-report" style="flex:1">📊 学习报告</button>
+      <button class="wrongbtn" id="btn-report" style="flex:1">📊 报告</button>
     </div>
     <div class="trail" id="trail"></div>
   </section>
@@ -264,6 +265,16 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
     </div>
     <div class="ttsnote" id="ttsnote">朗读使用手机自带语音引擎。若无声音：请用 Safari / Chrome 打开（微信内置浏览器可能不支持），并确认未开静音键。</div>
     <div id="st-body"></div>
+  </section>
+
+  <!-- ============ SRS CARDS ============ -->
+  <section class="screen" id="scr-srs">
+    <div class="wb-head">
+      <button class="backbtn" id="btn-sr-back">← 返回</button>
+      <h2>🃏 记忆卡</h2>
+    </div>
+    <p class="wb-sub">替代 Anki 的内置复习：看正面 → 心里想答案 → 翻面 → 按真实情况选按钮。「认识」的卡间隔会翻倍（1→2→4→7→15 天），「不认识」的今天还会再来。每天最多 8 张新卡。</p>
+    <div id="sr-body"></div>
   </section>
 
   <!-- ============ VOCAB BOOK ============ -->
@@ -485,6 +496,34 @@ const W1=[
 ];
 
 /* ---------- 泛读番外（考试题型训练，i 难度）---------- */
+/* ---------- 记忆卡（内置间隔重复，替代 Anki）---------- */
+const CARDS=[
+ {f:'Mary is her first name, and Bell is her ______ name.（姓）',b:'<b>last</b>',s:'Mary is her first name, and Bell is her last name.'},
+ {f:'What is your ______ name?（全名）',b:'<b>full</b>',s:'What is your full name?'},
+ {f:'Tom is a student in ______ 7.（七年级）',b:'<b>Grade</b>',s:'Tom is a student in Grade 7.'},
+ {f:'His class ______ is Ms Hu.（班主任）',b:'<b>teacher</b>',s:'His class teacher is Ms Hu.'},
+ {f:'We have a new ______ today. Her name is Emma.（同班同学）',b:'<b>classmate</b>',s:'We have a new classmate today.'},
+ {f:'They talk a lot and get to ______ each other.（认识；了解）',b:'<b>know</b>',s:'They talk a lot and get to know each other.'},
+ {f:'They talk a lot and get to know ______ other.（互相）',b:'<b>each</b>',s:'They get to know each other.'},
+ {f:'Emma is in a band with her ______ brother, Jack.（双胞胎的）',b:'<b>twin</b>',s:'Emma is in a band with her twin brother, Jack.'},
+ {f:'She plays the ______ in a small band.（吉他）',b:'<b>guitar</b>',s:'She plays the guitar in a small band.'},
+ {f:'Emma is in a ______ with Jack. They play music together.（乐队）',b:'<b>band</b>',s:'Emma is in a band with Jack.'},
+ {f:'You and Jack are the ______ age!（相同的）',b:'<b>same</b>',s:'You and Jack are the same age!'},
+ {f:'Maybe it is a ______ — Bell is a common last name.（错误）',b:'<b>mistake</b>',s:'Maybe it is a mistake.'},
+ {f:'Or maybe it is a ______!（线索）',b:'<b>clue</b>',s:'Or maybe it is a clue!'},
+ {f:'My ______ in Sydney is Mrs Bell.（邻居）',b:'<b>neighbour</b>',s:'My neighbour in Sydney is Mrs Bell.'},
+ {f:'They talk ______ ______ and become friends.（很多，两个词）',b:'<b>a lot</b>',s:'They talk a lot and become friends.'},
+ {f:'—______ are you from? —I am from Sydney, Australia.（哪里）',b:'<b>Where</b>',s:'Where are you from? I am from Sydney, Australia.'},
+ {f:'—Are you really from Sydney? —Yes, I ______.（简略答语）',b:'<b>am</b>',s:'Are you really from Sydney? Yes, I am.'},
+ {f:'Jack is quiet, but Emma ______ quiet at all.（be动词否定）',b:'<b>isn\u2019t / is not</b>',s:'Jack is quiet, but Emma is not quiet at all.'},
+ {f:'Tom and I ______ in the same class.（be动词）',b:'<b>are</b>（Tom and I = we）',s:'Tom and I are in the same class.'},
+ {f:'Look at the dog. ______ name is Biscuit.（它的·物主代词）',b:'<b>Its</b>（its≠it\u2019s！it\u2019s=it is）',s:'Look at the dog. Its name is Biscuit.'},
+ {f:'The key is for our ______ place. You know it well.（特别的）',b:'<b>special</b>',s:'The key is for our special place.'},
+ {f:'Grandpa says he doesn\u2019t ______ the special place.（记得）',b:'<b>remember</b>',s:'Grandpa says he does not remember.'},
+ {f:'Let\u2019s make a ______ for you!（个人档案）',b:'<b>profile</b>',s:'Let\u2019s make a profile for you!'},
+ {f:'Why is Mary ______ to you?（重要的）',b:'<b>important</b>',s:'Why is Mary important to you?'}
+];
+
 const EXTRA=[
  {id:'x0',et:'Hello Around the World',tag:'📚 泛读 · 文化短文 · 建议 6 分钟读完+做题',stamp:'🌏',
   paras:[
@@ -962,6 +1001,77 @@ $('ab-tap').onclick=()=>{ tapMode=!tapMode; $('ab-tap').textContent='👆 点读
 $('btn-story').onclick=()=>openStory(firstUnread());
 $('btn-st-back').onclick=()=>{renderMap();show('scr-map');};
 
+/* =================== 记忆卡（内置间隔重复） =================== */
+const SRS_INT=[0,1,2,4,7,15], SRS_NEW_LIMIT=8;
+const dstr=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();};
+function srsInit(){ if(!S.srs) S.srs={cards:{},log:{}}; if(!S.srs.log[dstr()]) S.srs.log[dstr()]={r:0,n:0}; }
+function srsCounts(){ srsInit(); const now=Date.now(); let due=0, fresh=0;
+  CARDS.forEach((c,i)=>{ const st=S.srs.cards['c'+i];
+    if(!st) fresh++; else if(st.due<=now) due++; });
+  const newLeft=Math.max(0, SRS_NEW_LIMIT-S.srs.log[dstr()].n);
+  return {due, newAvail:Math.min(fresh,newLeft)};
+}
+let SR=null;
+function startSrs(){
+  srsInit(); const now=Date.now();
+  const due=[], fresh=[];
+  CARDS.forEach((c,i)=>{ const id='c'+i, st=S.srs.cards[id];
+    if(!st) fresh.push(id); else if(st.due<=now) due.push({id,due:st.due}); });
+  due.sort((a,b)=>a.due-b.due);
+  const newLeft=Math.max(0, SRS_NEW_LIMIT-S.srs.log[dstr()].n);
+  SR={queue:due.map(x=>x.id).concat(fresh.slice(0,newLeft)), done:0, again:0};
+  renderSrs(); show('scr-srs');
+}
+function renderSrs(){
+  if(!SR||!SR.queue.length){ renderSrsDone(); return; }
+  const id=SR.queue[0], c=CARDS[+id.slice(1)];
+  const isNew=!S.srs.cards[id];
+  $('sr-body').innerHTML=
+    '<div class="qmeta"><span class="num">剩余 '+SR.queue.length+' 张</span>'+
+    '<span>'+(isNew?'<span class="diffchip d1">🆕 新卡</span>':'<span class="diffchip d2">♻️ 复习</span>')+'</span>'+
+    '<span class="num">今日已完成 '+SR.done+'</span></div>'+
+    '<div class="qcard airmail"><div class="qtext en" style="font-weight:600">'+c.f+'</div>'+
+    '<div id="sr-back" style="display:none;margin-top:16px;border-top:1px dashed var(--card-edge);padding-top:14px;font-size:17px;line-height:1.8">'+
+    c.b+'<br><span class="en" style="color:var(--ink-dim);font-size:15px">'+c.s+'</span> '+
+    '<button class="abtn" type="button" id="sr-say">🔊</button></div>'+
+    '<button class="nextbtn show" id="sr-flip" style="margin-top:18px">翻面看答案</button>'+
+    '<div class="resbtns" id="sr-grade" style="display:none">'+
+    '<button style="background:rgba(194,74,58,.12);color:var(--coral);border:1px solid var(--coral)">😵 不认识</button>'+
+    '<button style="background:rgba(201,155,63,.14);color:#8A6A1E;border:1px solid var(--gold)">🤔 模糊</button>'+
+    '<button style="background:rgba(61,139,95,.12);color:var(--mint);border:1px solid var(--mint)">😄 认识</button>'+
+    '</div></div>';
+  $('sr-flip').onclick=()=>{ $('sr-back').style.display=''; $('sr-flip').style.display='none';
+    $('sr-grade').style.display='flex'; };
+  $('sr-say').onclick=()=>{ TTS.stop(); TTS.speak(c.s); };
+  const btns=$('sr-grade').querySelectorAll('button');
+  btns[0].onclick=()=>srsGrade(id,0); btns[1].onclick=()=>srsGrade(id,1); btns[2].onclick=()=>srsGrade(id,2);
+}
+function srsGrade(id,g){
+  srsInit(); const now=Date.now(), today=S.srs.log[dstr()];
+  let st=S.srs.cards[id];
+  if(!st){ st=S.srs.cards[id]={box:0,due:now}; today.n++; } else today.r++;
+  SR.queue.shift(); SR.done++;
+  if(g===0){ st.box=0; st.due=now; SR.queue.push(id); SR.again++; }        // 今天再来
+  else if(g===1){ st.box=Math.max(1,st.box); st.due=now+1*DAY; }           // 明天再见
+  else { st.box=Math.min(SRS_INT.length-1, st.box+1); st.due=now+SRS_INT[st.box]*DAY; }
+  save(); renderSrs();
+}
+function renderSrsDone(){
+  const {due,newAvail}=srsCounts();
+  const today=S.srs.log[dstr()];
+  $('sr-body').innerHTML='<div class="rescard airmail"><div style="font-size:42px">🎉</div>'+
+    '<h2>今日记忆卡完成！</h2>'+
+    '<p class="sub">今天过了 <b class="num">'+(today.r+today.n)+'</b> 张（新卡 '+today.n+' · 复习 '+today.r+'）'+
+    (due+newAvail>0?'<br>还有 '+(due+newAvail)+' 张可继续':'<br>队列已清空，明天会有新的到期卡')+'</p>'+
+    '<div class="resbtns">'+
+    (due+newAvail>0?'<button class="btn-main" id="sr-more">继续刷</button>':'')+
+    '<button class="btn-ghost" id="sr-home">返回地图</button></div></div>';
+  const m=$('sr-more'); if(m)m.onclick=startSrs;
+  $('sr-home').onclick=()=>{renderMap();show('scr-map');};
+}
+$('btn-srs').onclick=startSrs;
+$('btn-sr-back').onclick=()=>{renderMap();show('scr-map');};
+
 /* =================== 单词本 =================== */
 let vbTest=false, vbPlaying=false;
 function renderVocab(){
@@ -1108,19 +1218,19 @@ const PLAN=[
   {t:'🔤 单词本预习：20 个词各跟读两遍（生词先混个脸熟）',auto:()=>!!S.vocabSeen},
   {t:'🎧📖 精读第 1 节 The Old Box（盲听→精读→点读）',auto:()=>S.comp.e0!=null},
   {t:'🗣 影子跟读第 1 节 3 分钟（开点读，逐句模仿）',key:'m_sh1'},
-  {t:'🃏 Anki 8 分钟',key:'m_ak1'}]},
+  {t:'🃏 记忆卡：清完今日队列',auto:()=>{srsInit();const t=S.srs.log[dstr()];return (t.r+t.n)>0&&srsCounts().due===0;}}]},
  {d:'周二',items:[
   {t:'📘 语法讲堂 1 + 第 1 站「语言基石」闯到 60%',auto:()=>mPct(S.theta.s1)>=UNLOCK_PCT},
   {t:'📄 纸质：中译英 5 句（手写）',key:'m_tr1'},
-  {t:'🃏 Anki 8 分钟',key:'m_ak2'}]},
+  {t:'🃏 记忆卡：清完今日队列',key:'m_ak2'}]},
  {d:'周三',items:[
   {t:'🎧📖 精读第 2 节 A New Classmate',auto:()=>S.comp.e1!=null},
   {t:'📚 泛读番外 1《Hello Around the World》',auto:()=>S.extra.x0!=null},
-  {t:'🃏 Anki 8 分钟',key:'m_ak3'}]},
+  {t:'🃏 记忆卡：清完今日队列',key:'m_ak3'}]},
  {d:'周四',items:[
   {t:'📘 语法讲堂 2 + 第 2 站「实战应用」闯到 60%',auto:()=>mPct(S.theta.s2)>=UNLOCK_PCT},
   {t:'🗣 影子跟读第 2 节 3 分钟',key:'m_sh2'},
-  {t:'🃏 Anki 8 分钟',key:'m_ak4'}]},
+  {t:'🃏 记忆卡：清完今日队列',key:'m_ak4'}]},
  {d:'周五',items:[
   {t:'🎧📖 精读第 3 节 The Yellow Letter',auto:()=>S.comp.e2!=null},
   {t:'📘 讲堂 3 + 第 3 站「单词关」闯到 60%',auto:()=>mPct(S.theta.s3)>=UNLOCK_PCT},
@@ -1132,7 +1242,7 @@ const PLAN=[
  {d:'周日 · 约 45 分钟',items:[
   {t:'✍️ 写作：Tom 的寻人档案（写完贴给 AI 批改）',auto:()=>!!S.writing.w1},
   {t:'🗨 Claude 语音模式：扮演 Emma 用英语聊 5 分钟',key:'m_talk'},
-  {t:'🃏 Anki 复习堆清零',key:'m_ak7'}]}
+  {t:'🃏 记忆卡：到期清零收官',key:'m_ak7'}]}
 ];
 function planItemDone(it){ return it.auto?!!it.auto():!!S.manual[it.key]; }
 function renderPlan(){
@@ -1176,6 +1286,8 @@ function renderMapStatsOnly(){
 function renderMap(){
   renderMapStatsOnly();
   const pend=S.wrongBook.length; $('wb-badge').textContent=pend; $('wb-badge').style.display=pend?'':'none';
+  const sc=srsCounts(); const stot=sc.due+sc.newAvail;
+  $('srs-badge').textContent=stot; $('srs-badge').style.display=stot?'':'none';
   const rec=recommend(); const tb=$('btn-today');
   tb.textContent=rec.label; tb.onclick=rec.act||null; tb.style.opacity=rec.act?1:.6;
 
@@ -1218,6 +1330,7 @@ function renderMap(){
 function recommend(){
   if(!S.diagDone) return {label:'🎯 今日推荐：先完成「行前体检」', act:startDiag};
   if(!S.vocabSeen) return {label:'🔤 今日推荐：到「单词本」预习词汇（每个词跟读两遍）', act:()=>{S.vocabSeen=true;save();renderVocab();show('scr-vocab');}};
+  if(srsCounts().due>0) return {label:'🃏 今日推荐：记忆卡到期复习（'+srsCounts().due+' 张）', act:startSrs};
   if(S.comp['e0']==null) return {label:'🎯 今日推荐：读故事第 1 节 The Old Box（先盲听）', act:()=>openStory(0)};
   if(mPct(S.theta.s1)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 1 + 第 1 站「语言基石」', act:()=>startSkill('s1')};
   if(S.comp['e1']==null) return {label:'🎯 今日推荐：读故事第 2 节 A New Classmate', act:()=>openStory(1)};

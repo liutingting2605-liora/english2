@@ -181,7 +181,8 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
   padding:5px 10px;border-radius:8px;z-index:5;box-shadow:0 4px 12px rgba(0,0,0,.25);}
 .gw.on{background:rgba(61,107,84,.12);border-radius:4px;}
 .gw.on i{display:block;}
-.eptabs{display:flex;gap:8px;margin:14px 0;}
+.eptabs{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap;}
+.eptab{flex:1 1 30%;min-width:0;}
 .eptab{flex:1;background:var(--card);border:1px solid var(--card-edge);border-radius:12px;padding:10px 6px;font-size:13px;
   font-weight:700;color:var(--ink-dim);cursor:pointer;text-align:center;font-family:inherit;}
 .eptab.cur{border-color:var(--air-red);color:var(--air-red);}
@@ -234,7 +235,7 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
       <div class="stat"><div class="v num" id="st-acc">—</div><div class="k">总正确率</div></div>
     </div>
     <button class="wrongbtn" id="btn-today" style="border-color:var(--air-red);color:var(--air-red)">🎯 今日推荐</button>
-    <button class="wrongbtn" id="btn-story">📖 第 1 章 ·《The Key in the Attic》</button>
+    <button class="wrongbtn" id="btn-story">📖 连载故事《The Key in the Attic》· 第 1–2 章</button>
     <div style="display:flex;gap:10px">
       <button class="wrongbtn" id="btn-vocab" style="flex:1">🔤 单词本</button>
       <button class="wrongbtn" id="btn-extra" style="flex:1">📚 泛读番外</button>
@@ -252,7 +253,7 @@ button:focus-visible,.node:focus-visible{outline:2px solid var(--air-blue);outli
   <section class="screen" id="scr-story">
     <div class="wb-head">
       <button class="backbtn" id="btn-st-back">← 返回</button>
-      <h2>📖 第 1 章 · The Key in the Attic</h2>
+      <h2>📖 The Key in the Attic</h2>
     </div>
     <p class="wb-sub">推荐流程：先「🎧 盲听挑战」听两遍答大意题 → 展开原文精读（虚线词点释义）→ 开「点读」逐句跟读 → 做「读懂了吗」。</p>
     <div class="eptabs" id="eptabs"></div>
@@ -468,6 +469,73 @@ const STORY=[
    {q:'Why does Emma make five questions?',o:["To make Tom's profile","To do her homework","To test Grandpa","To write to Mary"],a:0,ex:"Emma 的计划：先给 Tom 做一份 profile，悉尼的朋友们才能认识他、帮忙找人。"}
   ],
   talk:['信里说 "Please don\u2019t be angry with me."，Mary 当年为什么可能这样写？','B. M. B. 三个字母，你有几种猜想？','如果你给悉尼的陌生朋友写自我介绍，最想让对方知道你的哪三件事？']
+ },
+ /* ============ 第 2 章 · 家谱上的秘密 (Unit 2) ============ */
+ {t:'2-1',et:'The Family Tree',sk:'s4',stamp:'🌳',
+  paras:[
+   ["On Monday, Ms Hu gives the class a {project|项目；作业}.","\u201CMake your family tree! Bring photos and share your family stories.\u201D"],
+   ["That evening, Tom sits with Grandpa at the big table.","They draw a tree with many {branches|树枝} on paper.","\u201CThis is my father — your {great-grandfather|曾祖父},\u201D says Grandpa.","\u201CHis name is Ben Bell. In this photo, he is a young teacher.\u201D"],
+   ["Tom writes the names on the tree: Great-grandpa Ben, Grandpa, Dad, Mum, and Tom.","Then his pen stops.","\u201CGrandpa, Mary goes here, next to you.","But what is her full name? Just Mary Bell?\u201D"],
+   ["Grandpa is quiet for a moment.","\u201CNo,\u201D he says slowly.","\u201CHer full name is Beatrice Mary Bell.","Beatrice is our grandmother\u2019s name.","But everyone {calls|称呼} her Mary.\u201D"],
+   ["Beatrice. Mary. Bell.","Tom\u2019s eyes open wide.","\u201CB. M. B.! Grandpa! The letters on the dog\u2019s collar!","They are HER letters — Biscuit wears her name!\u201D"],
+   ["Grandpa holds the old photo with two hands.","\u201CShe loves that dog a lot,\u201D he says softly.","\u201CHe goes with her everywhere — to the fields, to school, to our...\u201D","He stops."],
+   ["\u201CTo your what?\u201D asks Tom.","But Grandpa only smiles and shakes his head.","\u201CFinish your tree first, young man.","Some stories need the right time.\u201D"]
+  ],
+  words:'<b>project</b> 项目 · <b>great-grandfather</b> 曾祖父 · <b>call</b> 称呼 · <b>family tree</b> 家谱树 · <b>branch</b> 树枝<br>句型：Ms Hu gives the class a project. / Everyone calls her Mary. / She loves that dog a lot.',
+  gist:[
+   {q:'What do Tom and Grandpa make?',o:['A family tree','A big cake','A school map'],a:0},
+   {q:'What is Mary\u2019s full name?',o:['Beatrice Mary Bell','Mary Biscuit Bell','Bell Mary Beatrice'],a:0}
+  ],
+  comp:[
+   {q:'What is Ms Hu\u2019s project?',o:['Make a family tree','Draw a school map','Write a song','Make a cake'],a:0,ex:'开头：Make your family tree! —— 和课本 Unit 2 的 project 一模一样。'},
+   {q:'What does \u201CB. M. B.\u201D stand for?',o:['Beatrice Mary Bell','Ben and Mary Bell','Big Mystery Box','Biscuit My Boy'],a:0,ex:'Her full name is Beatrice Mary Bell —— 狗项圈上刻的是主人的名字。第 1 章的谜题解开了！'},
+   {q:'Why does Grandpa stop talking at the end?',o:['He doesn\u2019t want to tell the place now','He forgets Mary\u2019s name','He is angry with Tom','He doesn\u2019t like the tree'],a:0,ex:'推断题：Some stories need the right time —— 那个"our..."后面的地方，爷爷还不想说。'}
+  ],
+  talk:['爷爷没说完的 "to our..." 会是什么地方？大胆猜！','把你自己的 family tree 画出来，用英语介绍三个人（This is my ... His/Her name is ...）','为什么名字对寻人这么重要？']
+ },
+ {t:'2-2',et:'News from Sydney',sk:'s5',stamp:'🕵️',
+  paras:[
+   ["On Wednesday, Emma runs to Tom with her phone.","\u201CNews! Leo\u2019s new post! Read it!\u201D"],
+   ["\u201CHi Tom and Emma! {Detective|侦探} Leo here.","My report about Mrs Bell:","She lives in the white house at the end of our street.","She lives {alone|独自}, but she is not sad.","She grows flowers, and she plays the guitar every evening.\u201D"],
+   ["\u201CShe has a big old dog.","Today I ask her, \u2018What\u2019s your dog\u2019s name?\u2019","And she says — Biscuit!\u201D"],
+   ["\u201CBiscuit!\u201D Tom almost shouts.","\u201CThe same name!\u201D"],
+   ["The post goes on:","\u201CWait, there is more.","My mum says Mrs Bell makes the best cakes in our street.","Every year, on the same day in {autumn|秋天}, she makes a big cake.","But she doesn\u2019t eat it.","She puts it by the window, with two {forks|叉子}.","Nobody knows why.\u201D"],
+   ["Emma looks at Tom.","\u201CTwo forks. A cake for two people.","Who is the other fork for?\u201D"],
+   ["Tom thinks of Grandpa.","Grandpa\u2019s birthday is in autumn.","\u201CEmma,\u201D he says quietly, \u201CI think I know.\u201D"]
+  ],
+  words:'<b>detective</b> 侦探 · <b>alone</b> 独自 · <b>autumn</b> 秋天 · <b>fork</b> 叉子 · <b>report</b> 报告<br>句型：She lives alone. / She doesn\u2019t eat it. / Nobody knows why. / She plays the guitar every evening.',
+  gist:[
+   {q:'Who writes the post?',o:['Leo','Jack','Mrs Bell'],a:0},
+   {q:'What is the dog\u2019s name?',o:['Biscuit','Bell','Oscar'],a:0}
+  ],
+  comp:[
+   {q:'What does Mrs Bell do every evening?',o:['She plays the guitar','She makes a cake','She writes letters','She walks to school'],a:0,ex:'定位：she plays the guitar every evening。做侦探先抓"频率词"every evening。'},
+   {q:'What does Mrs Bell do with the big cake?',o:['She puts it by the window with two forks','She eats it with Biscuit','She gives it to Leo','She takes it to school'],a:0,ex:'She doesn\u2019t eat it. She puts it by the window, with two forks. —— 细节题回原文。'},
+   {q:'Who is the other fork probably for?',o:['Her brother far away','Her dog Biscuit','Leo\u2019s mum','A new friend'],a:0,ex:'推断题：秋天+两副叉子+爷爷的生日在秋天 —— 那块蛋糕年年在等一个人。'}
+  ],
+  talk:['Mrs Bell "独自生活但并不悲伤"，你从哪些细节看出她的生活状态？','那块每年秋天的蛋糕，让你想到了什么？','如果你是 Leo，下一步你会怎么调查？']
+ },
+ {t:'2-3',et:'The Video Call',sk:'s6',stamp:'📞',
+  paras:[
+   ["On Saturday morning in China, it is evening in Sydney.","Emma calls her twin brother on video.","\u201CMission time, Jack!\u201D"],
+   ["On the screen, Jack and Leo stand in front of the white house.","Tom watches. His hands are cold."],
+   ["Mrs Bell opens the door.","She is old, with white hair and kind eyes.","Biscuit sits next to her.","\u201CHello, boys. Do you want some cake?\u201D"],
+   ["They eat cake and talk.","Jack asks, \u201CDo you come from China, Mrs Bell?\u201D","She smiles. \u201CWhat a question! Why do you ask?\u201D"],
+   ["Then Leo says the name.","\u201CAre you... Beatrice Mary Bell?\u201D"],
+   ["The old lady is very, very quiet.","Her hand goes up to her neck — there is a small key on a {chain|链子}!","\u201CThat name is from a long, long time ago,\u201D she says softly.","\u201CGood night, boys.\u201D","And she closes the door, {gently|轻轻地}."],
+   ["On the screen, nobody speaks.","Then Emma says, \u201CTom. Look. Her key.\u201D","Tom takes out Grandpa\u2019s key and holds it up.","Two small keys. One in China, one in Sydney.","\u201CThey are the same,\u201D he says."]
+  ],
+  words:'<b>chain</b> 链子 · <b>gently</b> 轻轻地 · <b>mission</b> 任务 · <b>screen</b> 屏幕<br>句型：Do you want some cake? / Do you come from China? / Why do you ask?',
+  gist:[
+   {q:'Who opens the door?',o:['Mrs Bell','Leo\u2019s mum','Jack'],a:0},
+   {q:'What does Emma see on Mrs Bell\u2019s neck?',o:['A small key','A red scarf','A photo'],a:0}
+  ],
+  comp:[
+   {q:'Where are Jack and Leo?',o:['In front of Mrs Bell\u2019s house','At Tom\u2019s home','At school in China','In a shop'],a:0,ex:'Jack and Leo stand in front of the white house —— 方位介词 in front of，下一章重点预习！'},
+   {q:'What is on Mrs Bell\u2019s neck?',o:['A small key on a chain','A guitar','Biscuit\u2019s collar','Two forks'],a:0,ex:'Her hand goes up to her neck — there is a small key on a chain! 和爷爷的钥匙一模一样。'},
+   {q:'How does Mrs Bell feel when she hears the name?',o:['Quiet and a little sad','Very angry','Happy and excited','Bored'],a:0,ex:'推断题：very quiet + "a long, long time ago" + 轻轻关门 —— 不是生气，是往事太重。她为什么离开？钥匙开什么？下一章见。'}
+  ],
+  talk:['Mrs Bell 就是 Mary 吗？列出目前所有证据（狗名、B.M.B.、蛋糕、钥匙……）','她听到真名后为什么关门？她在害怕什么、难过什么？','两把一样的钥匙，会开同一样东西吗？那会是什么？']
  }
 ];
 
@@ -493,6 +561,41 @@ const W1=[
  {en:'last name',cn:'姓',s:'Bell is his ______ .'},
  {en:'special',cn:'特别的',s:'The key is for our ______ place.'},
  {en:'remember',cn:'记得',s:'Grandpa doesn\u2019t ______ the place.'}
+];
+
+/* ---------- Unit 2 默写词库（第 6 站 + 单词本 Unit 2 页）---------- */
+const W2=[
+ {en:'cousin',cn:'表/堂兄弟姐妹',s:'Lucy is my ______.'},
+ {en:'aunt',cn:'姑妈；姨妈',s:'My mum\u2019s sister is my ______.'},
+ {en:'uncle',cn:'叔叔；舅舅',s:'My dad\u2019s brother is my ______.'},
+ {en:'grandparents',cn:'祖父母',s:'My ______ live in Sydney.'},
+ {en:'grandfather',cn:'祖父；外公',s:'My ______ gets up at six.'},
+ {en:'grandmother',cn:'祖母；外婆',s:'My ______ grows flowers.'},
+ {en:'husband',cn:'丈夫',s:'Mr Wang is Ms Li\u2019s ______.'},
+ {en:'son',cn:'儿子',s:'Grandpa is Ben\u2019s ______.'},
+ {en:'parents',cn:'父母',s:'My ______ work every day.'},
+ {en:'whose',cn:'谁的',s:'______ guitar is this?'},
+ {en:'chess',cn:'国际象棋',s:'Grandpa plays ______ with Dad.'},
+ {en:'laugh',cn:'大笑',s:'His funny stories make us ______.'},
+ {en:'handsome',cn:'英俊的',s:'My dad is tall and ______.'},
+ {en:'wear',cn:'穿；戴',s:'I ______ a hat in the sun.'},
+ {en:'hat',cn:'帽子',s:'She wears a pink ______.'},
+ {en:'tall',cn:'高的',s:'Jack is ______, but Emma is not.'},
+ {en:'short',cn:'矮的；短的',s:'My hair is ______.'},
+ {en:'clean',cn:'干净的',s:'Our classroom is big and ______.'},
+ {en:'every day',cn:'每天（两个词）',s:'He practises the drums ______ ______.'},
+ {en:'a lot of',cn:'许多（三个词）',s:'She has ______ ______ ______ books.'}
+];
+
+/* ---------- 听力题音频句（生成语音脚本会一并配音）---------- */
+const LISTEN=[
+ {k:'l1_1',t:'Emma is from Sydney, Australia, and she is twelve years old.'},
+ {k:'l1_2',t:'Bell is her last name, and Mary is her first name.'},
+ {k:'l1_3',t:'Tom is not in Class Five. He is in Class Three, Grade Seven.'},
+ {k:'l2_1',t:'She plays the guitar every evening, and she grows beautiful flowers.'},
+ {k:'l2_2',t:'Jack doesn\u2019t like music class, but he plays the drums very well.'},
+ {k:'l2_3',t:'Whose hat is this? It\u2019s my grandfather\u2019s.'},
+ {k:'l2_4',t:'Tom\u2019s family has five people, and they have a cat.'}
 ];
 
 /* ---------- 泛读番外（考试题型训练，i 难度）---------- */
@@ -521,7 +624,28 @@ const CARDS=[
  {f:'The key is for our ______ place. You know it well.（特别的）',b:'<b>special</b>',s:'The key is for our special place.'},
  {f:'Grandpa says he doesn\u2019t ______ the special place.（记得）',b:'<b>remember</b>',s:'Grandpa says he does not remember.'},
  {f:'Let\u2019s make a ______ for you!（个人档案）',b:'<b>profile</b>',s:'Let\u2019s make a profile for you!'},
- {f:'Why is Mary ______ to you?（重要的）',b:'<b>important</b>',s:'Why is Mary important to you?'}
+ {f:'Why is Mary ______ to you?（重要的）',b:'<b>important</b>',s:'Why is Mary important to you?'},
+ /* ---- Unit 2 ---- */
+ {f:'My aunt and uncle\u2019s child is my ______.（表/堂兄弟姐妹）',b:'<b>cousin</b>',s:'My aunt and uncle\u2019s child is my cousin.'},
+ {f:'My mum\u2019s sister is my ______.（姑妈/姨妈）',b:'<b>aunt</b>',s:'My mum\u2019s sister is my aunt.'},
+ {f:'My dad\u2019s brother is my ______.（叔叔/舅舅）',b:'<b>uncle</b>',s:'My dad\u2019s brother is my uncle.'},
+ {f:'They are my father\u2019s parents — my ______.（祖父母）',b:'<b>grandparents</b>',s:'They are my grandparents.'},
+ {f:'—______ guitar is this? —It\u2019s Emma\u2019s.（谁的）',b:'<b>Whose</b>',s:'Whose guitar is this? It is Emma\u2019s.'},
+ {f:'This is my grandpa______ piano.（所有格）',b:'<b>\u2019s</b>（grandpa\u2019s 爷爷的）',s:'This is my grandpa\u2019s piano.'},
+ {f:'Grandpa ______ (get) up at six every morning.（三单）',b:'<b>gets</b>',s:'Grandpa gets up at six every morning.'},
+ {f:'She makes a big cake, but she ______ (not eat) it.（三单否定）',b:'<b>doesn\u2019t eat</b>',s:'She makes a big cake, but she does not eat it.'},
+ {f:'—______ Mrs Bell live alone? —Yes, she does.（助动词）',b:'<b>Does</b>',s:'Does Mrs Bell live alone? Yes, she does.'},
+ {f:'—Do you like chess? —Yes, I ______.（简答）',b:'<b>do</b>',s:'Do you like chess? Yes, I do.'},
+ {f:'Emma ______ a twin brother.（有·三单）',b:'<b>has</b>（have 的三单是 has）',s:'Emma has a twin brother.'},
+ {f:'Jack and Emma ______ a band.（有·复数）',b:'<b>have</b>',s:'Jack and Emma have a band.'},
+ {f:'His funny stories make us ______.（大笑）',b:'<b>laugh</b>',s:'His funny stories make us laugh.'},
+ {f:'My dad is tall and ______.（英俊的）',b:'<b>handsome</b>',s:'My dad is tall and handsome.'},
+ {f:'She ______ (wear) a pink hat.（穿戴·三单）',b:'<b>wears</b>',s:'She wears a pink hat.'},
+ {f:'He plays chess ______ ______.（每天·两个词）',b:'<b>every day</b>',s:'He plays chess every day.'},
+ {f:'She has ______ ______ ______ flowers.（许多·三个词）',b:'<b>a lot of</b>',s:'She has a lot of flowers.'},
+ {f:'______ are my parents, and that is my uncle.（这些）',b:'<b>These</b>（近处复数）',s:'These are my parents, and that is my uncle.'},
+ {f:'Her full name is Beatrice, but everyone ______ (call) her Mary.（三单）',b:'<b>calls</b>',s:'Everyone calls her Mary.'},
+ {f:'Biscuit goes with her everywhere. She loves him ______ ______.（非常·两个词）',b:'<b>a lot</b>',s:'She loves him a lot.'}
 ];
 
 const EXTRA=[
@@ -556,6 +680,38 @@ const EXTRA=[
    {q:'What do Emma and Tom know about Mary?<br>a. She plays the guitar. &nbsp;b. Her dog is Biscuit. &nbsp;c. The letters B. M. B. &nbsp;d. Her phone number',o:['a, b, c','a, b, d','b, c, d','a, c, d'],a:0,ex:'组合细节题：逐项回原文核对，电话号码没有提到。这是期中卷高频题型。'},
    {q:'\u201CWe look for his great-aunt.\u201D Here \u201Clook for\u201D means ___.',o:['寻找','看着','照顾','喜欢'],a:0,ex:'猜词题：全文都在"找"Mary，look for = 寻找。look at 看着 / look after 照顾，注意区分。'},
    {q:'Why does Emma write this post?',o:['To ask her Sydney friends for clues','To sell a guitar','To find a new dog','To say goodbye to Tom'],a:0,ex:'目的题：结尾 Please write to us! Every little clue is important. 就是在向朋友们求线索。'}
+  ]},
+ /* ---- Unit 2 番外 ---- */
+ {id:'x2',et:'Teng Fei\u2019s Weekend',tag:'📚 泛读 · 记叙文 · Unit 2 · 建议 6 分钟读完+做题',stamp:'🏓',
+  paras:[
+   ["Teng Fei\u2019s family is never boring at weekends.","On Saturday morning, he plays ping-pong with his grandpa.","Grandpa is seventy, but he plays very well.","He wins every time!"],
+   ["Teng Fei\u2019s father doesn\u2019t play ping-pong.","He loves fishing.","He {spends|花（时间）} hours by the river, quiet and happy.","Sometimes he catches nothing, but he doesn\u2019t {care|在意}."],
+   ["In the afternoon, the family goes to the park together.","Teng Fei\u2019s mother doesn\u2019t like sport, but she loves music.","In the evening, she plays the piano at home, and everyone listens."],
+   ["On Sunday, they clean the house together.","Teng Fei cleans his room, and his little sister helps Mum in the kitchen.","Then they have a big family dinner.","\u201CA busy weekend is a happy weekend,\u201D says Grandpa."],
+  ],
+  qs:[
+   {q:'Who wins at ping-pong every time?',o:['Grandpa','Teng Fei','Father','Mother'],a:0,ex:'Grandpa is seventy, but he plays very well. He wins every time! —— but 表转折，年纪大≠打得差。'},
+   {q:'What does Father love?',o:['Fishing','Ping-pong','Music','Cleaning'],a:0,ex:'He loves fishing. 注意 doesn\u2019t play ping-pong 是干扰信息。'},
+   {q:'\u201CHe spends hours by the river.\u201D The word \u201Cspends\u201D means ___.',o:['花（时间）','钓到','扔掉','跑过'],a:0,ex:'猜词题：spend + 时间 = 花时间。spend a lot of time doing sth 是 Unit 2 高频短语。'},
+   {q:'Which is NOT in the passage?',o:['They play basketball','They clean the house','They go to the park','They have a big dinner'],a:0,ex:'NOT 题选"没出现的"：篮球全文没有提到。'},
+   {q:'What is the best title for the passage?',o:['A Happy Family Weekend','How to Play Ping-pong','Grandpa\u2019s Fish','A Quiet Sunday'],a:0,ex:'标题题：全文讲一家人的周末活动，标题要"盖得住全文、又不太大"。'}
+  ]},
+ {id:'x3',et:'Family Day at Sunshine School',tag:'📚 泛读 · 应用文（通知）· 期中「读写综合」同款体裁 · 建议 5 分钟',stamp:'📋',
+  paras:[
+   ["SUNSHINE SCHOOL · FAMILY DAY","Saturday, 26 October"],
+   ["Dear parents,","Family Day is coming!","Come to school and have fun with your children."],
+   ["9:00 — Family sports on the sports field.","Run with your child!"],
+   ["10:30 — \u201CMy Family Tree\u201D show in the school hall.","Students talk about their family photos."],
+   ["12:00 — Big lunch in the dining hall.","Every family brings one {dish|一道菜}."],
+   ["14:00 — Family {concert|音乐会}.","Does your child play the piano or the guitar?","Welcome to the show!"],
+   ["Please write your family\u2019s name on the {notice board|公告栏} before Friday.","See you there!"]
+  ],
+  qs:[
+   {q:'When is Family Day?',o:['Saturday, 26 October','Friday, 26 October','Sunday, 26 September','Monday, 26 October'],a:0,ex:'应用文先看标题和日期行——时间信息一般在最显眼处。'},
+   {q:'Where is the \u201CMy Family Tree\u201D show?',o:['In the school hall','On the sports field','In the dining hall','In the classroom'],a:0,ex:'定位 10:30 那一行：in the school hall。地点词是下单元（My School）的主角，先混个脸熟。'},
+   {q:'What does every family bring for lunch?',o:['One dish','One photo','One guitar','One cake'],a:0,ex:'Every family brings one dish. dish 在这里是"一道菜"。'},
+   {q:'Where can you probably see this notice?',o:['On the school notice board','In a story book','On a food menu','In a maths book'],a:0,ex:'文体题：这是学校通知（notice），贴在公告栏——期中卷的读写综合就爱考这类应用文。'},
+   {q:'Lily plays the guitar. Which activity is for her?',o:['The family concert at 14:00','Family sports at 9:00','The big lunch at 12:00','Writing names on Friday'],a:0,ex:'推断题：Does your child play the piano or the guitar? Welcome to the show! —— 会乐器→音乐会。'}
   ]}
 ];
 
@@ -599,20 +755,63 @@ const LESSON={
   checks:[
    {q:'「很多」的英文写法是？',o:['<span class="en">a lot</span>（两个词）','<span class="en">alot</span>','<span class="en">a lots</span>','<span class="en">lots a</span>'],a:0,ex:'a lot 永远是两个词。They talk a lot.'},
    {q:'记单词最有效的方式是？',o:['放进句子里，边读边拼','盯着单词表看十分钟','抄写一百遍不读音','考前一晚全部背'],a:0,ex:'词不离句 + 读音拆拼 + 反复自测（错题回炉/Anki），是记忆研究反复验证的组合。'}
+  ]},
+ s4:{title:'📘 讲堂 4 · 一般现在时（do/does）',sub:'第 2 章的语法主角：动词也要"看主语脸色"了',
+  obs:['Grandpa <b>gets</b> up at six every morning.（第 2-1 节）',
+       'She <b>grows</b> flowers, and she <b>plays</b> the guitar every evening.',
+       'She makes a big cake, but she <b>doesn\u2019t eat</b> it.',
+       '\u201C<b>Do</b> you want some cake?\u201D',
+       '—<b>Does</b> Mrs Bell live alone? —Yes, she <b>does</b>.'],
+  obsHint:'先观察 30 秒：主语是 he/she/it（三单）时，动词发生了什么？否定和疑问用了什么帮手？',
+  rules:'<b>① 三单加 -s</b>：he / she / it / 单数名词做主语 → 动词加 s（plays, gets, lives）；以 ch/sh/o/s/x 结尾加 -es（watches, goes）；<b>have → has</b>。其他主语（I/you/we/they/复数）动词用原形。<br>'+
+        '<b>② 否定</b>：don\u2019t / doesn\u2019t + <b>动词原形</b>：She doesn\u2019t eat（不是 doesn\u2019t eats！doesn\u2019t 已经替动词"扛"了三单）。<br>'+
+        '<b>③ 疑问</b>：Do / Does 提到句首 + 动词原形：Does she make cakes?（make 不加 s）<br>'+
+        '<b>④ 简答</b>：Yes, she does. / No, she doesn\u2019t. —— 用 do/does 回答，不重复动词。<br>'+
+        '⚠️ 最高频失分点：doesn\u2019t / Does 后面动词忘记变回原形。',
+  checks:[
+   {q:'<span class="en">Mrs Bell ___ alone in Sydney.</span>',o:['<span class="en">lives</span>','<span class="en">live</span>','<span class="en">is live</span>','<span class="en">living</span>'],a:0,ex:'Mrs Bell 三单 → lives。'},
+   {q:'—<span class="en">Does she eat the cake?</span> —<span class="en">No, ___.</span>',o:['<span class="en">she doesn\u2019t</span>','<span class="en">she don\u2019t</span>','<span class="en">she isn\u2019t</span>','<span class="en">she doesn\u2019t eat</span>'],a:0,ex:'Does 问 does 答：No, she doesn\u2019t. 简答不重复动词。'}
+  ]},
+ s5:{title:'📘 讲堂 5 · 名词所有格与指示代词',sub:'"谁的东西"和"这个那个"——家谱单元的两件工具',
+  obs:['This is my <b>grandpa\u2019s</b> piano.（单数名词 + \u2019s）',
+       'These drumsticks are <b>Jack\u2019s</b>.（东西可省略：Jack\u2019s = Jack 的鼓槌）',
+       'They\u2019re my <b>grandparents\u2019</b> caps.（s 结尾的复数只加 \u2019）',
+       '—<b>Whose</b> fishing rods are those? —They\u2019re my father\u2019s.',
+       '<b>This</b> is my dad. <b>These</b> are my cousins. <b>That</b> tree is old. <b>Those</b> bats are grandpa\u2019s.'],
+  obsHint:'观察撇号 \u2019 的位置，以及 this/that/these/those 的分工：',
+  rules:'<b>① 名词所有格</b>：单数名词 + \u2019s（Kate\u2019s cat）；以 s 结尾的复数名词只加 \u2019（grandparents\u2019 caps）；两人共有加在最后（Ella and Emma\u2019s classroom）。<br>'+
+        '<b>② whose 谁的</b>：Whose hat is this? 答：It\u2019s + 所有格（It\u2019s my uncle\u2019s.）<br>'+
+        '<b>③ 指示代词四分法</b>：近处单数 this / 近处复数 these ｜ 远处单数 that / 远处复数 those。就近回答：Is this...? → Yes, it is.（不用 this 回答）<br>'+
+        '⚠️ 陷阱：名词所有格的 \u2019s 和 is 的缩写长得一样——Kate\u2019s cat（凯特的猫）≠ Kate\u2019s kind（Kate is kind）。看后面跟的是名词还是形容词。',
+  checks:[
+   {q:'<span class="en">These are my ___ ping-pong bats.</span>（我祖父母的）',o:['<span class="en">grandparents\u2019</span>','<span class="en">grandparents\u2019s</span>','<span class="en">grandparent</span>','<span class="en">grandparents</span>'],a:0,ex:'s 结尾的复数名词，所有格只加撇号 \u2019。'},
+   {q:'—<span class="en">___ guitar is this?</span> —<span class="en">It\u2019s Emma\u2019s.</span>',o:['<span class="en">Whose</span>','<span class="en">Who</span>','<span class="en">Which</span>','<span class="en">What</span>'],a:0,ex:'答语是所有格，问"谁的"用 Whose。'}
+  ]},
+ s6:{title:'📘 讲堂 6 · Unit 2 单词攻略',sub:'先在「单词本」的 Unit 2 页学过一遍再来测',
+  obs:['<b>家族词成对记</b>：aunt↔uncle（姑姨↔叔舅）、grandmother↔grandfather、son↔daughter。画一张家谱图，把词填在人身上，比背单词表快得多。',
+       '<b>易错拼写</b>：cousin（不是 cusin）、grandparents 中间没有连字符、handsome 里藏着 hand。',
+       '<b>词组数词数</b>：every day 两个词、a lot of 三个词、a lot 两个词——考试写错空格数直接丢分。'],
+  obsHint:'Unit 2 的词都围着"家"转，三个记法：',
+  rules:'<b>本站玩法</b>：一半"句子挖空＋中文提示"（期中同款），一半 🎧 听音拼写。拼错的进错题本回炉，连对两次出炉。<br>默写小规则：whose 别写成 who\u2019s（who\u2019s = who is）；laugh 的 gh 发 /f/，边读边拼就不会漏。',
+  checks:[
+   {q:'「每天」的正确写法是？',o:['<span class="en">every day</span>（两个词）','<span class="en">everyday</span>','<span class="en">every days</span>','<span class="en">everyday\u2019s</span>'],a:0,ex:'every day（两个词）作时间状语；everyday（一个词）是形容词"日常的"，七年级先记两个词的版本。'},
+   {q:'「谁的」的正确写法是？',o:['<span class="en">whose</span>','<span class="en">who\u2019s</span>','<span class="en">whos</span>','<span class="en">who is\u2019</span>'],a:0,ex:'whose 谁的；who\u2019s = who is 谁是。发音一样，写法不同——高频陷阱。'}
   ]}
 };
 
 const SUBJECT = {
   id:'trek-english-v2',
   skills:[
-    {key:'s1', icon:'🧱', name:'第 1 站 · 语言基石', alt:'Unit 1 · be 动词一般现在时 + 人称代词 · 配合故事第 1 节'},
-    {key:'s2', icon:'🕵️', name:'第 2 站 · 实战应用', alt:'Unit 1 · 补全对话 · 连词成句 · 语篇与阅读 · 配合故事第 2 节'},
-    {key:'s3', icon:'🔤', name:'第 3 站 · 单词关', alt:'Unit 1 · 看中文默写 + 听音拼写 · 对应期中「单词拼写」题型 · 配合故事第 3 节'}
+    {key:'s1', icon:'🧱', name:'第 1 站 · 语言基石', alt:'Unit 1 · be 动词一般现在时 + 人称代词 · 配合故事 1-1'},
+    {key:'s2', icon:'🕵️', name:'第 2 站 · 实战应用', alt:'Unit 1 · 补全对话 · 连词成句 · 语篇与阅读 · 配合故事 1-2'},
+    {key:'s3', icon:'🔤', name:'第 3 站 · 单词关', alt:'Unit 1 · 看中文默写 + 听音拼写 · 配合故事 1-3'},
+    {key:'s4', icon:'🌳', name:'第 4 站 · 语言基石 II', alt:'Unit 2 · 一般现在时 do/does 三单 · 配合故事 2-1'},
+    {key:'s5', icon:'🎧', name:'第 5 站 · 实战应用 II', alt:'Unit 2 · 所有格与 whose · 连词成句 · 听力题 · 阅读 · 配合故事 2-2'},
+    {key:'s6', icon:'🔡', name:'第 6 站 · 单词关 II', alt:'Unit 2 · 家族词默写 + 听音拼写 · 配合故事 2-3'}
   ],
   soon:[
-    {icon:'🔒', name:'第 2 章 · 家谱上的秘密', alt:'Unit 2 We\u2019re Family! · 悉尼的 Mrs Bell 到底是谁？'},
-    {icon:'🔒', name:'第 3 章 · 特别的地方', alt:'Unit 3 My School · 钥匙的秘密在校园里？'},
-    {icon:'🔒', name:'第 4 章 · 悉尼来信', alt:'Unit 4 My Favourite Subject · 第一封回信'}
+    {icon:'🔒', name:'第 3 章 · 特别的地方', alt:'Unit 3 My School · 两把钥匙指向哪里？'},
+    {icon:'🔒', name:'第 4 章 · 悉尼来信', alt:'Unit 4 My Favourite Subject · Mrs Bell 的回信？'}
   ],
   /* -------- 行前体检（小学核心，快速摸底）-------- */
   diag:[
@@ -654,12 +853,47 @@ const SUBJECT = {
    {skill:'s2',d:3,type:'mc',q:'<span class="mat">📖 '+en("Post from Sydney:<br>Hello! My name is Leo Chen. I am eleven, and I am in Grade 6. My neighbour is Mrs Bell. She is old but she is not quiet — she plays the guitar every evening! Her dog is big and friendly.")+'</span>Which is TRUE about Mrs Bell?',opts:[en('She plays the guitar.'),en('She is Leo\u2019s classmate.'),en('She is quiet.'),en('Her dog is small.')],a:0,ex:'原文：she plays the guitar every evening。她是 neighbour 不是 classmate；not quiet；狗是 big。判断题逐项回原文核对。'},
    {skill:'s2',d:3,type:'mc',q:'<span class="mat">📖 （接上文 Leo 的帖子）</span>'+en('How old is Leo, and what grade is he in?'),opts:[en('Eleven, Grade 6'),en('Twelve, Grade 7'),en('Eleven, Grade 7'),en('Ten, Grade 6')],a:0,ex:'I am eleven, and I am in Grade 6。数字信息题：回原文定位，别凭印象。'},
    {skill:'s2',d:3,type:'order',q:'连词成句：<br>「为什么 Mary 对你很重要？」',words:['why','is','Mary','important','to','you'],a:'why is Mary important to you',ex:'特殊疑问句 = 疑问词 + be + 主语 + 其他：Why is Mary important to you? —— 这正是 Tom 档案里的最后一问。'},
+   {skill:'s2',d:2,type:'listen',akey:'l1_1',atext:'Emma is from Sydney, Australia, and she is twelve years old.',q:'🎧 听录音，回答：'+en('Where is Emma from?'),opts:[en('Sydney, Australia'),en('London, the UK'),en('Beijing, China'),en('New York, the US')],a:0,ex:'录音：Emma is from <b>Sydney, Australia</b>... 听力先看题、预判要抓"地名"。'},
+   {skill:'s2',d:2,type:'listen',akey:'l1_2',atext:'Bell is her last name, and Mary is her first name.',q:'🎧 听录音，回答：'+en('What is her first name?'),opts:[en('Mary'),en('Bell'),en('Emma'),en('Biscuit')],a:0,ex:'录音把 last name 放在前面说——听力爱调换顺序设陷阱，要听"标签"不是听"位置"。'},
+   {skill:'s2',d:3,type:'listen',akey:'l1_3',atext:'Tom is not in Class Five. He is in Class Three, Grade Seven.',q:'🎧 听录音，回答：'+en('What class is Tom in?'),opts:[en('Class 3'),en('Class 5'),en('Class 7'),en('Grade 3')],a:0,ex:'录音先说 <b>not</b> in Class Five 再给正确信息——否定词后面往往才是答案，别抢答。'},
 
    /* ===== s3 单词关：默写与听写（期中第四题风格） ===== */
    {skill:'s3',d:1,type:'in',q:en('My ______ name is Bell, and my first name is Tom.')+'（姓，写出单词）',a:'last',ex:'last name 姓（在后），first name 名（在前）。整句：My <b>last</b> name is Bell.'},
    {skill:'s3',d:2,type:'in',q:'写出短语中缺的词：'+en('get to ______ each other')+'（互相认识）',a:'know',ex:'get to <b>know</b> each other 互相认识。课本 Unit 1 核心短语。'},
    {skill:'s3',d:2,type:'in',q:en('Nice to ______ you, Emma!')+'（见到，写出单词）',a:'meet',ex:'Nice to <b>meet</b> you! 初次见面用 meet，不要写成 see。'},
-   {skill:'s3',d:3,type:'in',q:en('They talk a ______ and become good friends.')+'（很多，写出单词）',a:'lot',ex:'a <b>lot</b> 很多。注意是两个词 a lot，不是 alot。'}
+   {skill:'s3',d:3,type:'in',q:en('They talk a ______ and become good friends.')+'（很多，写出单词）',a:'lot',ex:'a <b>lot</b> 很多。注意是两个词 a lot，不是 alot。'},
+
+   /* ===== s4 语言基石 II：do/does 三单 ===== */
+   {skill:'s4',d:1,type:'mc',q:en('Tom ___ a family tree with Grandpa.'),opts:[en('makes'),en('make'),en('is make'),en('making')],a:0,ex:'Tom 三单 → makes。一般现在时陈述句不用 be + 动词。'},
+   {skill:'s4',d:1,type:'mc',q:'—'+en('Do you like chess?')+' —'+en('Yes, I ___.'),opts:[en('do'),en('does'),en('am'),en('like')],a:0,ex:'Do 问 do 答：Yes, I do. 简答不重复动词。'},
+   {skill:'s4',d:1,type:'mc',q:en('My parents ___ in Sydney now.'),opts:[en('live'),en('lives'),en('is live'),en('living')],a:0,ex:'parents 复数 → 动词原形 live。'},
+   {skill:'s4',d:2,type:'mc',q:en('Emma ___ a twin brother, and they ___ a band.'),opts:[en('has; have'),en('have; has'),en('has; has'),en('have; have')],a:0,ex:'Emma 三单 → has；they 复数 → have。have 的三单是 has，考试最爱考。'},
+   {skill:'s4',d:2,type:'mc',q:en('___ Mrs Bell live alone?'),opts:[en('Does'),en('Do'),en('Is'),en('Are')],a:0,ex:'实义动词 live 的疑问句用助动词，三单用 Does。别和 be 动词疑问句混。'},
+   {skill:'s4',d:2,type:'mc',q:en('She makes a big cake, but she ___ it.'),opts:[en("doesn't eat"),en("doesn't eats"),en("don't eat"),en("not eats")],a:0,ex:'doesn\u2019t + 动词原形：doesn\u2019t eat。doesn\u2019t 已经替动词扛了三单，动词要"变回原形"。'},
+   {skill:'s4',d:2,type:'in',q:en('Grandpa ___ (get) up at six every morning.')+'（写出动词的正确形式）',a:'gets',ex:'Grandpa 三单 → gets。'},
+   {skill:'s4',d:2,type:'mc',q:en('Jack ___ music class, but he plays the drums well.'),opts:[en("doesn't like"),en("don't like"),en("isn't like"),en("doesn't likes")],a:0,ex:'Jack 三单否定 → doesn\u2019t like（like 用原形）。'},
+   {skill:'s4',d:3,type:'mc',q:'—'+en('Does Leo know Mrs Bell?')+' —'+en('___')+'',opts:[en('Yes, he does.'),en('Yes, he do.'),en('Yes, he knows.'),en('Yes, he is.')],a:0,ex:'Does 问 does 答；简答不重复 know。'},
+   {skill:'s4',d:3,type:'mc',q:'下列句子<b>有错误</b>的一项是？',opts:[en("She don't eat the cake."),en('My father goes fishing every week.'),en("Do they play chess? — No, they don't."),en('Emma has a lot of friends.')],a:0,ex:'she 三单，否定要用 doesn\u2019t：She <b>doesn\u2019t</b> eat the cake. —— don\u2019t/doesn\u2019t 选错是期中卷最高频扣分点。'},
+   {skill:'s4',d:3,type:'in',q:en('Does she ___ (make) cakes every autumn?')+'（写出动词的正确形式）',a:'make',ex:'Does 已提前，动词用<b>原形</b> make——不要再加 s！'},
+   {skill:'s4',d:3,type:'mc',q:en('Mr Bell ___ TV in the morning. He says morning time is gold.'),opts:[en("doesn't watch"),en('watches not'),en("don't watch"),en('no watches')],a:0,ex:'三单否定 doesn\u2019t + watch 原形。'},
+
+   /* ===== s5 实战应用 II：所有格/whose/听力/阅读 ===== */
+   {skill:'s5',d:1,type:'mc',q:'<span class="mat">💬 '+en('A: ___<br>B: It\u2019s my grandpa\u2019s.')+'</span>选择填入横线的句子：',opts:[en('Whose piano is this?'),en('Where is the piano?'),en('Who is your grandpa?'),en('What is this?')],a:0,ex:'答语是所有格 my grandpa\u2019s，问"谁的"用 Whose。'},
+   {skill:'s5',d:1,type:'order',q:'连词成句：<br>「这是我表哥的帽子。」',words:['this','is','my','cousin\u2019s','hat'],a:'this is my cousin\u2019s hat',ex:'This is my cousin\u2019s hat. 所有格 \u2019s 直接挂在名词后。'},
+   {skill:'s5',d:2,type:'order',q:'连词成句：<br>「爷爷每周都下国际象棋。」',words:['grandpa','plays','chess','every','week'],a:'grandpa plays chess every week',ex:'Grandpa plays chess every week. 频率短语 every week 放句尾；三单 plays。'},
+   {skill:'s5',d:2,type:'mc',q:en('This is ___ classroom. They keep it clean.'),opts:[en('Ella and Emma\u2019s'),en('Ella\u2019s and Emma\u2019s'),en('Ella and Emma'),en('Ella\u2019s and Emma')],a:0,ex:'两人<b>共有</b>一间教室，\u2019s 只加在最后一个名字后：Ella and Emma\u2019s。'},
+   {skill:'s5',d:2,type:'listen',akey:'l2_1',atext:'She plays the guitar every evening, and she grows beautiful flowers.',q:'🎧 听录音，回答：'+en('What does she do every evening?'),opts:[en('She plays the guitar.'),en('She grows flowers in the evening.'),en('She makes cakes.'),en('She walks the dog.')],a:0,ex:'录音原文：She plays the guitar <b>every evening</b>, and she grows beautiful flowers.（种花没说时间）听力抓"时间词+动作"的配对。'},
+   {skill:'s5',d:2,type:'listen',akey:'l2_3',atext:'Whose hat is this? It\u2019s my grandfather\u2019s.',q:'🎧 听录音，回答：'+en('Whose hat is it?'),opts:[en("It\u2019s the grandfather\u2019s."),en("It\u2019s the grandmother\u2019s."),en("It\u2019s the father\u2019s."),en("It\u2019s Jack\u2019s.")],a:0,ex:'录音：Whose hat is this? It\u2019s my grandfather\u2019s. 听清 grand<b>father</b> 还是 grand<b>mother</b>——听力爱考近音词。'},
+   {skill:'s5',d:3,type:'listen',akey:'l2_2',atext:'Jack doesn\u2019t like music class, but he plays the drums very well.',q:'🎧 听录音，判断哪一项<b>正确</b>：',opts:[en('Jack plays the drums well.'),en('Jack likes music class.'),en('Jack doesn\u2019t play the drums.'),en('Jack sings very well.')],a:0,ex:'录音里有 doesn\u2019t 和 but 两个"转弯"：不喜欢音乐课，<b>但是</b>鼓打得好。听力必须听完整句再作答。'},
+   {skill:'s5',d:3,type:'listen',akey:'l2_4',atext:'Tom\u2019s family has five people, and they have a cat.',q:'🎧 听录音，回答：'+en('How many people are there in Tom\u2019s family?'),opts:[en('Five.'),en('Four.'),en('Nine.'),en('Five people and a cat.')],a:0,ex:'录音：Tom\u2019s family has <b>five</b> people, and they have a cat. 猫不算 people！数字题听清、别加戏。'},
+   {skill:'s5',d:3,type:'mc',q:'<span class="mat">📖 '+en("Hi! I\u2019m Lily. Look at this photo of us. My dad Fred is on the left. He often plays tennis with me. My little brother Sam is seven, and he really likes chess. My grandparents are in the middle. They have a dog. His name is Oscar. They often say I\u2019m their favourite grandchild — but I think they say the same thing to my cousin Lucy too!")+'</span>'+en('Which is TRUE?'),opts:[en('Oscar is the grandparents\u2019 dog.'),en('Sam likes tennis.'),en('Fred is Lily\u2019s brother.'),en('Lucy is Lily\u2019s sister.')],a:0,ex:'They have a dog. His name is Oscar —— they 指 grandparents。Sam 喜欢 chess；Fred 是爸爸；Lucy 是 cousin。逐项回原文。'},
+   {skill:'s5',d:3,type:'mc',q:'<span class="mat">📖 （接上文 Lily 的短文）</span>'+en('Why does Lily think she is NOT the only \u201Cfavourite grandchild\u201D?'),opts:[en('Grandparents say the same to Lucy.'),en('Sam is the favourite.'),en('She has no grandparents.'),en('Oscar is the favourite.')],a:0,ex:'they say the same thing to my cousin Lucy too —— 幽默的言外之意：每个孙辈都是"最爱"。推断题看 but 后半句。'},
+
+   /* ===== s6 单词关 II ===== */
+   {skill:'s6',d:1,type:'in',q:en('My aunt and uncle\u2019s child is my ______.')+'（表/堂兄弟姐妹，写出单词）',a:'cousin',ex:'<b>cousin</b>，注意拼写 cou-sin，不是 cusin。'},
+   {skill:'s6',d:2,type:'in',q:en('______ fishing rods are those? — They\u2019re my father\u2019s.')+'（谁的）',a:'whose',ex:'<b>whose</b> 谁的。不要写成 who\u2019s（=who is）。'},
+   {skill:'s6',d:2,type:'in',q:en('My grandpa is seventy, but he plays ping-pong very ______.')+'（好·副词）',a:'well',ex:'修饰动词 plays 用副词 <b>well</b>，不是 good。'},
+   {skill:'s6',d:3,type:'in',q:en('He spends a ______ of time fishing.')+'（许多）',a:'lot',ex:'a <b>lot</b> of + 名词 = 许多。spend a lot of time doing 是 Unit 2 核心短语。'}
   ],
   /* -------- 参数化生成器 -------- */
   gens:{
@@ -733,6 +967,73 @@ const SUBJECT = {
         ex:'<b>'+w.en+'</b> '+w.cn+'。'};
       return {type:'in', q:'🎧 听音拼写：点按钮听单词，把听到的词拼出来。<br><button class="abtn" type="button" onclick="speakWord(\''+w.en+'\')">🔊 播放 / 再听一遍</button><br><span style="font-size:13px;color:var(--ink-dim)">提示：中文意思是「'+w.cn+'」</span>', a:w.en,
         ex:'这个词是 <b>'+w.en+'</b>（'+w.cn+'）。听写是期中听力和拼写的双重训练。'};}}
+   ],
+   s4:[
+    {gid:'g4a',d:1,make(){ const V=[['play','plays'],['like','likes'],['live','lives'],['make','makes'],['get','gets'],['grow','grows'],['watch','watches'],['go','goes'],['have','has'],['teach','teaches']];
+      const SUBJ=[['Tom',1],['Emma',1],['My grandpa',1],['Mrs Bell',1],['She',1],['He',1],['I',0],['We',0],['They',0],['My parents',0],['Tom and Emma',0],['You',0]];
+      const v=pick(V), s=pick(SUBJ);
+      const tail={play:'chess with Grandpa',plays:'chess with Grandpa',like:'the old photo',likes:'the old photo',live:'in Sydney',lives:'in Sydney',make:'a family tree',makes:'a family tree',get:'up at six',gets:'up at six',grow:'flowers in the garden',grows:'flowers in the garden',watch:'TV at night',watches:'TV at night',go:'to school by bike',goes:'to school by bike',have:'a big dog',has:'a big dog',teach:'English at our school',teaches:'English at our school'}[v[0]];
+      const right=v[s[1]], wrong=v[1-s[1]];
+      return {type:'mc', q:en(s[0]+' ___ '+tail+'.'), opts:[en(right),en(wrong),en('is '+v[0]),en(v[0]+'ing')], a:0,
+        ex:'主语「'+s[0]+'」'+(s[1]?'是三单，动词加 s/es（have→has）':'不是三单，动词用原形')+'：'+right+'。陈述句不要加 be。'};}},
+    {gid:'g4b',d:2,make(){ const P=[
+        {qz:'Does your father play chess?',ans:'Yes, he does.',w:['Yes, he plays.','Yes, he do.','Yes, she does.']},
+        {qz:'Do your grandparents live with you?',ans:'No, they don\u2019t.',w:['No, they doesn\u2019t.','No, they aren\u2019t.','No, they don\u2019t live.']},
+        {qz:'Does Emma have a twin brother?',ans:'Yes, she does.',w:['Yes, she has.','Yes, she do.','Yes, he does.']},
+        {qz:'Do you make your bed every day?',ans:'Yes, I do.',w:['Yes, you do.','Yes, I make.','Yes, I am.']},
+        {qz:'Does Mrs Bell eat the big cake?',ans:'No, she doesn\u2019t.',w:['No, she don\u2019t.','No, she isn\u2019t.','No, she doesn\u2019t eats.']}];
+      const c=pick(P);
+      return {type:'mc', q:'—'+en(c.qz)+' —'+en('___'),
+        opts:[en(c.ans),en(c.w[0]),en(c.w[1]),en(c.w[2])], a:0,
+        ex:'Do/Does 问就用 do/does 答，人称对应、不重复动词：'+c.ans};}},
+    {gid:'g4c',d:2,make(){ const P=[
+        {s:'She',v:'eat the cake',n:"doesn't"},{s:'They',v:'watch TV in the morning',n:"don't"},
+        {s:'Jack',v:'like music class',n:"doesn't"},{s:'I',v:'play chess',n:"don't"},
+        {s:'My mother',v:'drink coffee',n:"doesn't"},{s:'We',v:'go to school on Sundays',n:"don't"}];
+      const c=pick(P), wrong=c.n==="doesn't"?"don't":"doesn't";
+      return {type:'mc', q:en(c.s+' ___ '+c.v+'.')+'（否定）',
+        opts:[en(c.n),en(wrong),en('not'),en("isn't")], a:0,
+        ex:'「'+c.s+'」'+(c.n==="doesn't"?'三单用 doesn\u2019t':'非三单用 don\u2019t')+' + 动词原形。'};}}
+   ],
+   s5:[
+    {gid:'g5a',d:2,make(){ const P=[
+        {cn:'那些球拍是我爷爷的。',w:['those','bats','are','my','grandpa\u2019s'],a:'those bats are my grandpa\u2019s'},
+        {cn:'她每天晚上弹钢琴。',w:['she','plays','the','piano','every','evening'],a:'she plays the piano every evening'},
+        {cn:'Bell 太太独自生活吗？',w:['does','Mrs','Bell','live','alone'],a:'does Mrs Bell live alone'},
+        {cn:'这是谁的家谱树？',w:['whose','family','tree','is','this'],a:'whose family tree is this'},
+        {cn:'我叔叔有许多书。',w:['my','uncle','has','a','lot','of','books'],a:'my uncle has a lot of books'},
+        {cn:'他不常常大笑。',w:['he','doesn\u2019t','often','laugh'],a:'he doesn\u2019t often laugh'}];
+      const c=pick(P);
+      return {type:'order', q:'连词成句（点击单词按顺序组句）：<br>「'+c.cn+'」', words:c.w.slice(), a:c.a,
+        ex:'参考语序：'+c.a.charAt(0).toUpperCase()+c.a.slice(1)+(c.a.startsWith('does')||c.a.startsWith('whose')?'?':'.')+' 先抓主语和动词骨架。'};}},
+    {gid:'g5b',d:2,make(){ const P=[
+        {di:'A: ___ <br>B: They\u2019re my grandparents\u2019.',qz:'Whose caps are these?',w:['Where are the caps?','Who are they?','What are these?']},
+        {di:'A: Does your grandpa love sport? <br>B: ___ We play ping-pong every week.',qz:'Yes, he does.',w:['No, he doesn\u2019t.','Yes, he is.','Yes, we are.']},
+        {di:'A: ___ <br>B: He\u2019s my father\u2019s brother — my uncle.',qz:'Who\u2019s he?',w:['Whose is he?','How is he?','Where is he?']},
+        {di:'A: Is this your family photo? <br>B: ___ Look, these are my parents.',qz:'Yes, it is.',w:['Yes, this is.','No, it isn\u2019t.','Yes, they are.']}];
+      const c=pick(P);
+      return {type:'mc', q:'<span class="mat">💬 '+en(c.di)+'</span>横线处应填：',
+        opts:[en(c.qz),en(c.w[0]),en(c.w[1]),en(c.w[2])], a:0,
+        ex:'看上下文搭配：这里应填「'+c.qz+'」。'};}},
+    {gid:'g5c',d:2,make(){ const c=pick(LISTEN.filter(x=>x.k.indexOf('l2')===0));
+      const QA={l2_1:{q:'What does she grow?',a:'Beautiful flowers.',w:['Big cakes.','Old guitars.','Tall trees.']},
+                l2_2:{q:'What does Jack play well?',a:'The drums.',w:['The piano.','The guitar.','Music class.']},
+                l2_3:{q:'What are they talking about?',a:'A hat.',w:['A cat.','A bat.','A map.']},
+                l2_4:{q:'What pet do they have?',a:'A cat.',w:['A dog.','A parrot.','A fish.']}}[c.k];
+      return {type:'listen', akey:c.k, atext:c.t,
+        q:'🎧 听录音，回答：'+en(QA.q),
+        opts:[en(QA.a),en(QA.w[0]),en(QA.w[1]),en(QA.w[2])], a:0,
+        ex:'录音原文：'+en(c.t)+' 听力先看题目和选项、预判要抓的信息，再按播放。'};}}
+   ],
+   s6:[
+    {gid:'g6a',d:2,make(){ const w=pick(W2);
+      return {type:'in', q:en(w.s)+'（'+w.cn+'，把单词拼出来）', a:w.en,
+        ex:'<b>'+w.en+'</b> '+w.cn+'。整句：'+en(w.s.replace(/______( ______)*( ______)*/,'<b>'+w.en+'</b>'))};}},
+    {gid:'g6b',d:2,make(){ const w=pick(W2);
+      const canTTS = (typeof TTS!=='undefined') && TTS.ok;
+      if(!canTTS) return {type:'in', q:'默写：「'+w.cn+'」的英文是？（提示首字母 '+w.en[0]+'）', a:w.en, ex:'<b>'+w.en+'</b> '+w.cn+'。'};
+      return {type:'in', q:'🎧 听音拼写：点按钮听单词，把听到的词拼出来。<br><button class="abtn" type="button" onclick="speakWord(\''+w.en+'\')">🔊 播放 / 再听一遍</button><br><span style="font-size:13px;color:var(--ink-dim)">提示：中文意思是「'+w.cn+'」</span>', a:w.en,
+        ex:'这个词是 <b>'+w.en+'</b>（'+w.cn+'）。'};}}
    ]
   }
 };
@@ -804,7 +1105,7 @@ function dueReview(session){
   const e = S.wrongBook.filter(x=>!session.usedReview.has(x.key)).sort((a,b)=>a.at-b.at)[0];
   if(!e) return null;
   session.usedReview.add(e.key);
-  return {key:e.key, skill:e.skill, b:0, d:e.d||2, type:e.type, q:e.q, opts:e.opts, words:e.words, a:e.a, ex:e.ex, review:true};
+  return {key:e.key, skill:e.skill, b:0, d:e.d||2, type:e.type, akey:e.akey, atext:e.atext, q:e.q, opts:e.opts, words:e.words, a:e.a, ex:e.ex, review:true};
 }
 
 /* =================== TTS 朗读模块 =================== */
@@ -907,14 +1208,24 @@ function renderStory(){
       '</div><div class="feedback" style="margin-top:8px"><div class="fh"></div><div class="fbb"></div></div></div>').join('')+'</div>';
   /* Think & Talk */
   html+='<div class="talkbox"><h4>💬 Think & Talk（和爸妈聊一聊，中英都行）</h4>'+e.talk.map((t,i)=>(i+1)+'. '+t).join('<br>')+'</div>';
-  /* 第3节：续写 */
-  if(curEp===2){
-    const saved=S.writing.w1||'';
-    html+='<div class="writecard"><h4>✍️ 本周写作 · Tom 的寻人档案</h4>'+
-      '<p>替 Tom 写下这份发往悉尼的 profile（5–6 句）。逐条回答 Emma 的五个问题，最后一句说明 Why：<br>'+
-      '<span class="en">My full name is ... / I am ... years old. / I am in Grade ... / I am from ... / Mary is ... because ...</span></p>'+
-      '<textarea id="write-box" placeholder="Hello, friends in Sydney! My full name is ...">'+saved.replace(/</g,'&lt;')+'</textarea>'+
-      '<div class="checklist">✅ 自查：① 每句都有 be 动词吗（中式英语最易漏）？　② 人名、句首大写了吗？　③ 至少用一个否定句（如 We are not sure...）？</div>'+
+  /* 章末写作 */
+  const WRITES={
+   2:{key:'w1',title:'✍️ 第 1 周写作 · Tom 的寻人档案',
+      p:'替 Tom 写下这份发往悉尼的 profile（5–6 句）。逐条回答 Emma 的五个问题，最后一句说明 Why：<br><span class="en">My full name is ... / I am ... years old. / I am in Grade ... / I am from ... / Mary is ... because ...</span>',
+      ph:'Hello, friends in Sydney! My full name is ...',
+      ck:'✅ 自查：① 每句都有 be 动词吗（中式英语最易漏）？　② 人名、句首大写了吗？　③ 至少用一个否定句（如 We are not sure...）？'},
+   5:{key:'w2',title:'✍️ 第 2 周写作 · 给 Mrs Bell 的家书',
+      p:'Tom 想给 Mrs Bell 写一段 Bell 家的介绍（5–6 句），让她知道"家里人在等她"。用上家谱里的人物、名词所有格 \u2019s 和三单动词：<br><span class="en">My name is Tom Bell. My grandpa\u2019s name is ... He is your ... / He gets up at six and ... every day. / Grandpa\u2019s birthday is in autumn. We ...</span>',
+      ph:'Dear Mrs Bell, My name is Tom Bell. My grandpa\u2019s name is ...',
+      ck:'✅ 自查：① 三单动词加 -s 了吗（gets / plays / loves）？　② 用了至少一个所有格（my grandpa\u2019s ...）？　③ 有没有一句最想对她说的话？'}
+  };
+  const WC=WRITES[curEp];
+  if(WC){
+    const saved=S.writing[WC.key]||'';
+    html+='<div class="writecard" data-wkey="'+WC.key+'"><h4>'+WC.title+'</h4>'+
+      '<p>'+WC.p+'</p>'+
+      '<textarea id="write-box" placeholder="'+WC.ph+'">'+saved.replace(/</g,'&lt;')+'</textarea>'+
+      '<div class="checklist">'+WC.ck+'</div>'+
       '<button class="savebtn" id="btn-write-save">保存（周末贴给 AI 或家长批改）</button></div>';
   }
   if(e.sk){
@@ -959,7 +1270,7 @@ function bindStory(e,k,blindDone){
       save();
     };});
   });
-  const sv=$('btn-write-save'); if(sv) sv.onclick=()=>{ S.writing.w1=$('write-box').value; save(); sv.textContent='✓ 已保存'; };
+  const sv=$('btn-write-save'); if(sv) sv.onclick=()=>{ const wk=sv.closest('.writecard').dataset.wkey; S.writing[wk]=$('write-box').value; save(); sv.textContent='✓ 已保存'; };
 }
 function playAll(e){
   AUDIO.stop(); playing=true;
@@ -1074,10 +1385,14 @@ $('btn-sr-back').onclick=()=>{renderMap();show('scr-map');};
 
 /* =================== 单词本 =================== */
 let vbTest=false, vbPlaying=false;
+const VB_UNITS=[{name:'Unit 1',bank:W1,flag:'vocabSeen'},{name:'Unit 2',bank:W2,flag:'vocab2Seen'}];
+let vbUnit=0;
 function renderVocab(){
-  let html='';
-  W1.forEach((w,i)=>{
-    const ex=w.s.replace('______','<b style="color:var(--air-blue)">'+w.en+'</b>');
+  let html='<div class="eptabs" style="margin-top:0">'+VB_UNITS.map((u,i)=>
+    '<button class="eptab'+(i===vbUnit?' cur':'')+'" data-u="'+i+'">'+u.name+(S[u.flag]?'<span class="rd">✓ 已预习</span>':'')+'</button>').join('')+'</div>';
+  const bank=VB_UNITS[vbUnit].bank;
+  bank.forEach((w,i)=>{
+    const ex=w.s.replace(/______( ______)*( ______)*/,'<b style="color:var(--air-blue)">'+w.en+'</b>');
     html+='<div class="wb-item vb-card" data-i="'+i+'" style="cursor:pointer">'+
       '<div style="display:flex;align-items:center;gap:12px">'+
       '<span class="en" style="font-size:20px;font-weight:700;flex:1">'+w.en+'</span>'+
@@ -1088,6 +1403,8 @@ function renderVocab(){
       '</div>';
   });
   $('vb-body').innerHTML=html;
+  $('vb-body').querySelectorAll('.eptab').forEach(t=>{ t.onclick=()=>{ vbUnit=+t.dataset.u;
+    S[VB_UNITS[vbUnit].flag]=true; save(); renderVocab(); }; });
   $('vb-body').querySelectorAll('.vb-say').forEach(b=>{ b.onclick=(ev)=>{ ev.stopPropagation();
     speakWord(b.dataset.w); }; });
   $('vb-body').querySelectorAll('.vb-card').forEach(c=>{ c.onclick=()=>{ if(!vbTest)return;
@@ -1099,10 +1416,11 @@ function vbPlayAll(){
   AUDIO.stop(); vbPlaying=true;
   let i=0;
   const cards=[...$('vb-body').querySelectorAll('.vb-card')];
-  const step=()=>{ if(!vbPlaying||i>=W1.length){vbPlaying=false;$('vb-playall').textContent='▶️ 全部连读';cards.forEach(x=>x.style.borderColor='');return;}
+  const bank=VB_UNITS[vbUnit].bank;
+  const step=()=>{ if(!vbPlaying||i>=bank.length){vbPlaying=false;$('vb-playall').textContent='▶️ 全部连读';cards.forEach(x=>x.style.borderColor='');return;}
     cards.forEach(x=>x.style.borderColor='');
     if(cards[i]){cards[i].style.borderColor='var(--air-red)';if(cards[i].scrollIntoView)cards[i].scrollIntoView({block:'center',behavior:'smooth'});}
-    const w=W1[i]; i++;
+    const w=bank[i]; i++;
     AUDIO.play('w_'+san(w.en), w.en+'. '+w.en+'.', ()=>setTimeout(step,350)); };
   $('vb-playall').textContent='🔊 连读中…'; step();
 }
@@ -1173,7 +1491,7 @@ function playExtra(){
 $('ex-play').onclick=()=>{ if(exPlaying){exPlaying=false;AUDIO.stop();$('ex-play').textContent='▶️ 朗读本篇';} else playExtra(); };
 $('ex-stop').onclick=()=>{ exPlaying=false; AUDIO.stop(); $('ex-play').textContent='▶️ 朗读本篇';
   document.querySelectorAll('#ex-body .sent').forEach(x=>x.classList.remove('playing')); };
-$('btn-extra').onclick=()=>openExtra(S.extra.x0==null?0:1);
+$('btn-extra').onclick=()=>{ const i=EXTRA.findIndex(e=>S.extra[e.id]==null); openExtra(i<0?0:i); };
 $('btn-ex-back').onclick=()=>{renderMap();show('scr-map');};
 
 /* =================== 语法讲堂 =================== */
@@ -1213,7 +1531,7 @@ function renderLesson(sk){
 $('btn-ls-back').onclick=()=>{renderMap();show('scr-map');};
 
 /* =================== 本周计划 =================== */
-const PLAN=[
+const PLAN1=[
  {d:'周一',items:[
   {t:'🔤 单词本预习：20 个词各跟读两遍（生词先混个脸熟）',auto:()=>!!S.vocabSeen},
   {t:'🎧📖 精读第 1 节 The Old Box（盲听→精读→点读）',auto:()=>S.comp.e0!=null},
@@ -1244,12 +1562,49 @@ const PLAN=[
   {t:'🗨 Claude 语音模式：扮演 Emma 用英语聊 5 分钟',key:'m_talk'},
   {t:'🃏 记忆卡：到期清零收官',key:'m_ak7'}]}
 ];
+const PLAN2=[
+ {d:'周一',items:[
+  {t:'🔤 单词本 Unit 2 页预习：家族词跟读两遍',auto:()=>!!S.vocab2Seen},
+  {t:'🎧📖 精读 2-1 The Family Tree（盲听→精读→点读）',auto:()=>S.comp.e3!=null},
+  {t:'🃏 记忆卡：清完今日队列（U2 新卡开始进入）',key:'n_ak1'}]},
+ {d:'周二',items:[
+  {t:'📘 讲堂 4 + 第 4 站「do/does」闯到 60%',auto:()=>mPct(S.theta.s4)>=UNLOCK_PCT},
+  {t:'📄 纸质：中译英 5 句（Unit 2 包第 1 页）',key:'n_tr1'},
+  {t:'🃏 记忆卡：清完今日队列',key:'n_ak2'}]},
+ {d:'周三',items:[
+  {t:'🎧📖 精读 2-2 News from Sydney',auto:()=>S.comp.e4!=null},
+  {t:'📚 泛读番外 3《Teng Fei\u2019s Weekend》',auto:()=>S.extra.x2!=null},
+  {t:'🃏 记忆卡：清完今日队列',key:'n_ak3'}]},
+ {d:'周四',items:[
+  {t:'📘 讲堂 5 + 第 5 站「所有格与听力」闯到 60%',auto:()=>mPct(S.theta.s5)>=UNLOCK_PCT},
+  {t:'🗣 影子跟读 2-2 三分钟（开点读逐句模仿）',key:'n_sh1'},
+  {t:'🃏 记忆卡：清完今日队列',key:'n_ak4'}]},
+ {d:'周五',items:[
+  {t:'🎧📖 精读 2-3 The Video Call',auto:()=>S.comp.e5!=null},
+  {t:'📘 讲堂 6 + 第 6 站「单词关 II」闯到 60%',auto:()=>mPct(S.theta.s6)>=UNLOCK_PCT},
+  {t:'📚 泛读番外 4《Family Day 通知》',auto:()=>S.extra.x3!=null}]},
+ {d:'周六 · 约 45 分钟',items:[
+  {t:'📄 纸质：Unit 2 单词默写表',key:'n_dict'},
+  {t:'🎙 口头复述第 2 章 + 录音回听',key:'n_retell'},
+  {t:'♻️ 错题回炉清零',key:'n_wb'}]},
+ {d:'周日 · 约 45 分钟',items:[
+  {t:'✍️ 写作：给 Mrs Bell 的家书（在 2-3 节末保存→贴给 AI 批改）',auto:()=>!!S.writing.w2},
+  {t:'🗨 Claude 语音模式：扮演 Emma 复盘第 2 章剧情 5 分钟',key:'n_talk'},
+  {t:'🃏 记忆卡：到期清零收官',key:'n_ak7'}]}
+];
+const PLANS=[{name:'第 1 周 · Unit 1',days:PLAN1},{name:'第 2 周 · Unit 2',days:PLAN2}];
+let planWeek=null;
 function planItemDone(it){ return it.auto?!!it.auto():!!S.manual[it.key]; }
 function renderPlan(){
+  if(planWeek==null) planWeek = S.writing.w1 ? 1 : 0;   // 第1章写作完成后默认显示第2周
+  const PLAN=PLANS[planWeek].days;
   const total=PLAN.reduce((n,d)=>n+d.items.length,0);
   const done=PLAN.reduce((n,d)=>n+d.items.filter(planItemDone).length,0);
-  $('pl-prog').innerHTML='<div class="mline"><div class="mbar"><i style="width:'+(100*done/total)+'%"></i></div>'+
+  $('pl-prog').innerHTML='<div class="eptabs" style="margin:0 0 10px">'+PLANS.map((w,i)=>
+      '<button class="eptab'+(i===planWeek?' cur':'')+'" data-w="'+i+'">'+w.name+'</button>').join('')+'</div>'+
+    '<div class="mline"><div class="mbar"><i style="width:'+(100*done/total)+'%"></i></div>'+
     '<span class="mpct num">'+done+'/'+total+'</span></div>';
+  $('pl-prog').querySelectorAll('.eptab').forEach(t=>{ t.onclick=()=>{ planWeek=+t.dataset.w; renderPlan(); }; });
   let html='';
   PLAN.forEach(day=>{
     html+='<div class="wb-item"><div class="wq">'+day.d+'</div>';
@@ -1339,7 +1694,18 @@ function recommend(){
   if(S.comp['e2']==null) return {label:'🎯 今日推荐：读故事第 3 节 The Yellow Letter', act:()=>openStory(2)};
   if(mPct(S.theta.s3)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 3 + 第 3 站「单词关」', act:()=>startSkill('s3')};
   if(S.extra.x1==null) return {label:'📚 今日推荐：泛读番外 2《寻人帖》', act:()=>openExtra(1)};
-  if(!S.writing.w1) return {label:'✍️ 今日推荐：完成 Tom 的寻人档案（本周写作）', act:()=>openStory(2)};
+  if(!S.writing.w1) return {label:'✍️ 今日推荐：完成 Tom 的寻人档案（第 1 周写作）', act:()=>openStory(2)};
+  /* ---- 第 2 章 ---- */
+  if(!S.vocab2Seen) return {label:'🔤 今日推荐：单词本「Unit 2」页预习家族词', act:()=>{vbUnit=1;S.vocab2Seen=true;save();renderVocab();show('scr-vocab');}};
+  if(S.comp['e3']==null) return {label:'🎯 今日推荐：读故事 2-1 The Family Tree（先盲听）', act:()=>openStory(3)};
+  if(mPct(S.theta.s4)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 4 + 第 4 站「do/does」', act:()=>startSkill('s4')};
+  if(S.comp['e4']==null) return {label:'🎯 今日推荐：读故事 2-2 News from Sydney', act:()=>openStory(4)};
+  if(S.extra.x2==null) return {label:'📚 今日推荐：泛读番外 3《Teng Fei\u2019s Weekend》', act:()=>openExtra(2)};
+  if(mPct(S.theta.s5)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 5 + 第 5 站「所有格与听力」', act:()=>startSkill('s5')};
+  if(S.comp['e5']==null) return {label:'🎯 今日推荐：读故事 2-3 The Video Call', act:()=>openStory(5)};
+  if(mPct(S.theta.s6)<UNLOCK_PCT) return {label:'🎯 今日推荐：讲堂 6 + 第 6 站「单词关 II」', act:()=>startSkill('s6')};
+  if(S.extra.x3==null) return {label:'📚 今日推荐：泛读番外 4《Family Day 通知》', act:()=>openExtra(3)};
+  if(!S.writing.w2) return {label:'✍️ 今日推荐：给 Mrs Bell 的家书（第 2 周写作）', act:()=>openStory(5)};
   const decayed = SUBJECT.skills.find((s,i)=>skillUnlocked(i)&&(S.decayedTo[s.key]||0)>0.15);
   if(decayed) return {label:'🎯 今日推荐：复习巩固「'+decayed.name.split('·')[1].trim()+'」', act:()=>startSkill(decayed.key)};
   if(S.wrongBook.length>=4) return {label:'🎯 今日推荐：错题回炉（积压 '+S.wrongBook.length+' 道）', act:startRedo};
@@ -1410,7 +1776,7 @@ function beginQuiz(skKey){
 }
 function startRedo(){
   const items=S.wrongBook.slice().sort((a,b)=>a.at-b.at).slice(0,8)
-    .map(e=>({key:e.key,skill:e.skill,b:0,d:e.d||2,type:e.type,q:e.q,opts:e.opts,words:e.words,a:e.a,ex:e.ex,review:true}));
+    .map(e=>({key:e.key,skill:e.skill,b:0,d:e.d||2,type:e.type,akey:e.akey,atext:e.atext,q:e.q,opts:e.opts,words:e.words,a:e.a,ex:e.ex,review:true}));
   if(!items.length) return;
   RUN={mode:'redo', quiz:shuffle(items), idx:0, correct:0, streak:0, best:0};
   $('sessbar').style.display='none'; show('scr-quiz'); renderQ(RUN.quiz[0]);
@@ -1438,7 +1804,14 @@ function renderQ(q){
   $('feedback').className='feedback'; $('btn-next').classList.remove('show');
   const opts=$('opts'), inputrow=$('inputrow'), ow=$('orderwrap');
   opts.innerHTML=''; inputrow.style.display='none'; ow.style.display='none';
-  if(q.type==='mc'){
+  const lp=document.getElementById('listenplay'); if(lp)lp.remove();
+  if(q.type==='mc'||q.type==='listen'){
+    if(q.type==='listen'&&q.akey){
+      const bar=document.createElement('div'); bar.id='listenplay'; bar.style.marginTop='14px';
+      bar.innerHTML='<button class="abtn" type="button" style="background:var(--air-blue);color:#fff">🔊 播放录音（可多次）</button>';
+      bar.querySelector('button').onclick=()=>AUDIO.play(q.akey,q.atext,null);
+      $('qtext').after(bar);
+    }
     const order=shuffle(q.opts.map((_,i)=>i)); optMap=order;
     order.forEach((oi,pos)=>{ const b=document.createElement('button'); b.className='opt';
       b.innerHTML='<span class="key">'+String.fromCharCode(65+pos)+'</span><span>'+q.opts[oi]+'</span>';
@@ -1500,7 +1873,7 @@ function settle(q,right){
   if(right){ if(q.review&&bi>-1){ S.wrongBook[bi].streak=(S.wrongBook[bi].streak||0)+1;
       if(S.wrongBook[bi].streak>=2)S.wrongBook.splice(bi,1);} }
   else{ if(bi>-1){S.wrongBook[bi].misses++;S.wrongBook[bi].streak=0;S.wrongBook[bi].at=Date.now();}
-    else S.wrongBook.push({key:q.key,skill:q.skill,d:q.d,type:q.type,q:q.q,opts:q.opts,words:q.words,a:q.a,ex:q.ex,misses:1,streak:0,at:Date.now()}); }
+    else S.wrongBook.push({key:q.key,skill:q.skill,d:q.d,type:q.type,akey:q.akey,atext:q.atext,q:q.q,opts:q.opts,words:q.words,a:q.a,ex:q.ex,misses:1,streak:0,at:Date.now()}); }
   save(); updateSessBar();
   const fb=$('feedback'); fb.className='feedback '+(right?'ok':'no');
   if(right) $('fb-head').textContent=CHEERS[Math.floor(Math.random()*CHEERS.length)]+(RUN.streak>=3?'  🔥连对 '+RUN.streak+' 题':'');
